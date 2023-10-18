@@ -1,5 +1,5 @@
+sqlite3
 streamlit
 langchain
 openai
-sqlite3
 chromadb
