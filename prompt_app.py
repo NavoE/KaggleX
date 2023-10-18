@@ -110,7 +110,7 @@ headline_prompt = FewShotPromptTemplate(
 
 press_template = PromptTemplate(
     input_variables = ["headline", "wikipedia_research"],
-    template = 'write me a press release based on this headline: {headline} while leveraging this wikipedia research : {wikipedia_research}'
+    template = 'I want you to act as a politician. You will research and analyze cultural, economic, political, and social events in the past, collect data from primary sources and use it to develop a press release about what happened during various periods of history. My first suggestion request is: write me a press release based on this headline: {headline} while leveraging this wikipedia research : {wikipedia_research}'
 )
 
 twitter_template = PromptTemplate(
