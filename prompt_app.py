@@ -13,6 +13,10 @@ from langchain.embeddings import OpenAIEmbeddings
 
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 #Import Kaggle data: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download
 
 #LangChain Crash Course: Build a AutoGPT app in 25 minutes!: https://www.youtube.com/watch?v=MlK6SIjcjE8
