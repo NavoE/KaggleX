@@ -4,3 +4,4 @@ openai
 pysqlite3-binary
 chromadb
 tiktoken
+wikipedia
