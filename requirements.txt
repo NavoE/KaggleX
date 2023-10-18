@@ -1,5 +1,4 @@
+tiktoken
 streamlit
 langchain
 openai
-chromadb
-tiktoken
