@@ -1,4 +1,4 @@
 tiktoken
 streamlit
-langchain
+pip install langsmith && conda install langchain -c conda-forge
 openai
