@@ -1,3 +1,5 @@
+import os
+import streamlit as st
 import json
 from langchain.schema import AIMessage
 from langchain.adapters.openai import convert_message_to_dict
@@ -5,8 +7,9 @@ import time
 import openai
 from io import BytesIO
 import pandas as pd
-from apikey import apikey
-openai.api_key = apikey
+
+os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
+
 
 
 if __name__ == "__main__":
