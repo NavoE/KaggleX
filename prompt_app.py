@@ -1,5 +1,10 @@
 import os
 
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
+import sqlite3
 import streamlit as st
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
@@ -13,9 +18,6 @@ from langchain.embeddings import OpenAIEmbeddings
 
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 #Import Kaggle data: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download
 
