@@ -1,5 +1,6 @@
 import os
 
+pip install langchain
 import streamlit as st
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
