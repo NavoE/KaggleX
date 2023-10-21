@@ -159,10 +159,6 @@ with st.sidebar:
   st.image('Logo/Political Banter-logos_white.png')
   st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
   st.markdown('Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
-  tab1 = st.tabs(["Fine Tuning Data"])
-  with tab1:
-    st.write("This data was used to fine tune the GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
-    st.write(data)
 
 #Returns response to prompt: What Political Issue Should I Write About?
 #Uses expanders and tabs to separate topics and data
@@ -204,4 +200,6 @@ if st.button('Submit'):
         st.info(google_research)
     with st.expander("Google Research History"):
         st.info(wiki_research)
+    st.write("This data was used to fine tune the GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
+    st.write(data)
     
