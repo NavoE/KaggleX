@@ -29,6 +29,7 @@ data = pd.read_csv('political_social_media.csv', encoding_errors= "ignore")
 #Finetuning for Tone: https://blog.langchain.dev/chat-loaders-finetune-a-chatmodel-in-your-voice/
 
 # App Framework
+#Color Palette: https://coolors.co/palette/cc8b86-f9eae1-7d4f50-d1be9c-aa998f
 st.title('Political Banter')
 st.header('Your go to generative AI solution for producing intelligent and informed political messaging.')
 st.write('Learn more about how Political Banter was developed in the side bar!')
