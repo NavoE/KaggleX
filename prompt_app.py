@@ -159,6 +159,10 @@ with st.sidebar:
   st.image('Logo/Political Banter-logos_black.png')
   st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
   st.markdown('Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
+  tab1 = st.tabs["Fine Tuning Data"]
+  with tab1:
+    st.write("This data was used to fine tune the GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
+    st.write(data)
 
 #Returns response to prompt: What Political Issue Should I Write About?
 #Uses expanders and tabs to separate topics and data
@@ -177,31 +181,27 @@ if st.button('Submit'):
     twitter = twitter_chain.run(press_release=press_release,headline=headline,wikipedia_research=wiki_research,google=google_research)
     facebook = facebook_chain.run(twitter=twitter,headline=headline,wikipedia_research=wiki_research,google=google_research)
     instagram = instagram_chain.run(facebook=facebook,wikipedia_research=wiki_research,google=google_research)
-    tab1, tab2 = (st.tabs("Generative AI", "Fine Tuning Data"))
-    tab1.write("Headline: " + headline)
+    st.write("Headline: " + headline)
     with st.expander("Headline History"):
       st.info(headline_memory.buffer)
     with st.expander("Press Release"):
-      tab1.write(press_release)
+      st.write(press_release)
     with st.expander("Press Release History"):
         st.info(press_memory.buffer)
     with st.expander("Tweet"):
-      tab1.write(twitter)
+      st.write(twitter)
     with st.expander("Tweet History"):
         st.info(twitter_memory.buffer)
     with st.expander("Facebook Post"):
-      tab1.write(facebook)
+      st.write(facebook)
     with st.expander("Facebook Post History"):
         st.info(facebook_memory.buffer)
     with st.expander("Instagram Post"):
-      tab1.write(instagram)
+      st.write(instagram)
     with st.expander("Instagram Post History"):
         st.info(instagram_memory.buffer)
     with st.expander("Wikipedia Research History"):
         st.info(google_research)
     with st.expander("Google Research History"):
         st.info(wiki_research)
-    
-    tab2.write("This data was used to fine tune the GenerativeAI Model and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
-    tab2.write(data)
     
