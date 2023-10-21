@@ -5,6 +5,7 @@ import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import sqlite3
+import pandas as pd
 import streamlit as st
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
@@ -20,12 +21,23 @@ os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 
 
 #Import Kaggle data: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download
+#Retrieve Data
+data = pd.read_csv('political_social_media.csv', encoding_errors= "ignore")
 
 #LangChain Crash Course: Build a AutoGPT app in 25 minutes!: https://www.youtube.com/watch?v=MlK6SIjcjE8
 #Use to run Streamlit: python -m streamlit run prompt_app.py
 #Finetuning for Tone: https://blog.langchain.dev/chat-loaders-finetune-a-chatmodel-in-your-voice/
 
+# App Framework
+with st.sidebar:
+  st.title('Political Banter')
+  st.header('Your go to generative AI solution for producing intelligent and informed political messaging.')
+  st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
+  st.text('Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
+  prompt = st.text_input('What Political Issue Should I Wite About?')
+
 #Few Shot Prompts
+# The few shot prompts will guide the algorithm to craft a catchy political headline.
 headline_examples = [
   {
     "question": "Can you write me a political headline?",
@@ -76,13 +88,6 @@ topic: Political Turmoil Grips Nation as Controversial Policies Divide Citizen
 topic: Political Landscape Shifts as New Policies Take Center Stage
 """
   },
-  {
-    "question": "Can you write me a political headline?",
-    "answer":
-"""
-topic: Politics Unveiled: A Closer Look at the Game of Power and Influence
-"""
-  }
 ]
 
 example_selector = SemanticSimilarityExampleSelector.from_examples(
@@ -96,11 +101,8 @@ example_selector = SemanticSimilarityExampleSelector.from_examples(
     k=1
 )
 
-# App Framework
-st.title('Political Banter Creator')
-prompt = st.text_input('Plug in your prompt here')
-
 #Prompt Templates
+#The prompt templates will determine the app's output.
 headline_template = PromptTemplate(
     input_variables = ["question","answer"],
     template = 'question: {question} \n {answer}'
@@ -121,17 +123,17 @@ press_template = PromptTemplate(
 
 twitter_template = PromptTemplate(
     input_variables = ["press_release"],
-    template = 'write me a twitter post based on this press release: {press_release}'
+    template = 'write me a twitter post based on this press release written by a politician using the tweets that are in the text column of this data' +  data' : {press_release}'
 )
 
 facebook_template = PromptTemplate(
     input_variables = ["twitter"],
-    template = 'write me a facebook post based on this twitter post: {twitter}'
+    template = 'write me a facebook post based on this twitter post tweeted by a politician: {twitter}'
 )
 
 instagram_template = PromptTemplate(
     input_variables = ["facebook"],
-    template = 'write me an instagram post based on this facebook post: {facebook}'
+    template = 'write me an instagram post based on this facebook post written by a politician: {facebook}'
 )
 
 # #Memory
@@ -159,12 +161,12 @@ if prompt:
     twitter = twitter_chain.run(press_release=press_release,headline=headline,wikipedia_research=wiki_research)
     facebook = facebook_chain.run(twitter=twitter,headline=headline,wikipedia_research=wiki_research)
     instagram = instagram_chain.run(facebook=facebook,wikipedia_research=wiki_research)
-    # response = sequential_chain({'topic':prompt})
+    col1, col2, col3, col4 = st.columns([3,1,1,1])
     st.write("Headline: " + headline)
-    st.write("Press Release: " + press_release)
-    st.write("Tweet: " + twitter)
-    st.write("Facebook Post: " + facebook)
-    st.write("Instagram Post: " + instagram)
+    col1.write("Press Release: " + press_release)
+    col2.write("Tweet: " + twitter)
+    col3.write("Facebook Post: " + facebook)
+    col4.write("Instagram Post: " + instagram)
 
     # with st.expander("Headline History"):
     #     st.info(headline_memory.buffer)
