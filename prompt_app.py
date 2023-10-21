@@ -151,7 +151,7 @@ instagram_chain = LLMChain(llm=llm, prompt=instagram_template, verbose = True, o
 #Color Palette 1: https://coolors.co/palette/cc8b86-f9eae1-7d4f50-d1be9c-aa998f
 #Color Palette 2: https://coolors.co/palette/e8d1c5-eddcd2-fff1e6-f0efeb-eeddd3-edede8
 st.title('Political Banter')
-st.header('Your go to generative AI solution for producing intelligent and informed political messaging.')
+st.header('The Next Generation of Political Tech')
 st.write('Learn more about how Political Banter was developed in the side bar!')
 prompt = st.text_input('What Political Issue Should I Write About?')
 
