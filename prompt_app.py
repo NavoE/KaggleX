@@ -178,28 +178,18 @@ if prompt:
     facebook = facebook_chain.run(twitter=twitter,headline=headline,wikipedia_research=wiki_research,google=google_research)
     instagram = instagram_chain.run(facebook=facebook,wikipedia_research=wiki_research,google=google_research)
     st.write("Headline: " + headline)
-    with st.expander("Headline History"):
-      st.info(headline_memory.buffer)
     with st.expander("Press Release"):
       st.write(press_release)
-    with st.expander("Press Release History"):
-        st.info(press_memory.buffer)
     with st.expander("Tweet"):
       st.write(twitter)
-    with st.expander("Tweet History"):
-        st.info(twitter_memory.buffer)
     with st.expander("Facebook Post"):
       st.write(facebook)
-    with st.expander("Facebook Post History"):
-        st.info(facebook_memory.buffer)
     with st.expander("Instagram Post"):
       st.write(instagram)
-    with st.expander("Instagram Post History"):
-        st.info(instagram_memory.buffer)
-    with st.expander("Wikipedia Research History"):
-        st.info(google_research)
-    with st.expander("Google Research History"):
+    with st.expander("Wikipedia Research"):
         st.info(wiki_research)
+    with st.expander("Google Research History"):
+        st.info(google_research)
     st.write("This data was used to fine tune the GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
     st.write(data)
     
