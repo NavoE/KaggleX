@@ -11,14 +11,16 @@ from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
-from langchain.utilities import WikipediaAPIWrapper
+from langchain.tools import Tool
+from langchain.utilities import WikipediaAPIWrapper, GoogleSearchAPIWrapper
 from langchain.prompts.few_shot import FewShotPromptTemplate
 from langchain.prompts.example_selector import SemanticSimilarityExampleSelector
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
-
+os.environ['GOOGLE_CSE_ID'] = st.secrets['GOOGLE_CSE_ID']
+os.environ['GOOGLE_API_KEY'] = st.secrets['GOOGLE_API_KEY']
 
 #Import Kaggle data: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download
 #Retrieve Data
@@ -109,8 +111,8 @@ headline_prompt = FewShotPromptTemplate(
 )
 
 press_template = PromptTemplate(
-    input_variables = ["headline", "wikipedia_research"],
-    template = 'I want you to act as a politician. You will research and analyze cultural, economic, political, and social events in the past, collect data from primary sources and use it to develop a press release about what happened during various periods of history. My first suggestion request is: write me a press release based on this headline: {headline} while leveraging this wikipedia research : {wikipedia_research}'
+    input_variables = ["headline", "wikipedia_research","google"],
+    template = 'I want you to act as a politician. You will research and analyze cultural, economic, political, and social events in the past, collect data from primary sources and use it to develop a press release about what happened during various periods of history. My first suggestion request is: write me a press release based on this headline: {headline} while leveraging this wikipedia research: {wikipedia_research} and google research: {google}'
 )
 
 twitter_template = PromptTemplate(
@@ -128,66 +130,78 @@ instagram_template = PromptTemplate(
     template = 'write me an instagram post based on this facebook post written by a politician: {facebook}'
 )
 
-# #Memory
-# headline_memory = ConversationBufferMemory(input_key="topic", memory_key="chat_history")
-# press_memory = ConversationBufferMemory(input_key="headline", memory_key="chat_history")
-# twitter_memory = ConversationBufferMemory(input_key="press_release", memory_key="chat_history")
-# facebook_memory = ConversationBufferMemory(input_key="twitter", memory_key="chat_history")
-# instagram_memory = ConversationBufferMemory(input_key="facebook", memory_key="chat_history")
+#Memory
+#Saves the chat history for the session
+headline_memory = ConversationBufferMemory(input_key="topic", memory_key="chat_history")
+press_memory = ConversationBufferMemory(input_key="headline", memory_key="chat_history")
+twitter_memory = ConversationBufferMemory(input_key="press_release", memory_key="chat_history")
+facebook_memory = ConversationBufferMemory(input_key="twitter", memory_key="chat_history")
+instagram_memory = ConversationBufferMemory(input_key="facebook", memory_key="chat_history")
 
 #LLMs
 #Runs the Generative AI model using LangChain
 llm = ChatOpenAI(temperature=0.5, model = "ft:gpt-3.5-turbo-0613:personal::84XCwFjs")
-headline_chain = LLMChain(llm=llm, prompt=headline_prompt, verbose = True, output_key = "headline")
-press_chain = LLMChain(llm=llm, prompt=press_template, verbose = True, output_key = "press_release")
-twitter_chain = LLMChain(llm=llm, prompt=twitter_template, verbose = True, output_key = "twitter")
-facebook_chain = LLMChain(llm=llm, prompt=facebook_template, verbose = True, output_key = "facebook")
-instagram_chain = LLMChain(llm=llm, prompt=instagram_template, verbose = True, output_key = "instagram")
+headline_chain = LLMChain(llm=llm, prompt=headline_prompt, verbose = True, output_key = "headline",memory=headline_memory)
+press_chain = LLMChain(llm=llm, prompt=press_template, verbose = True, output_key = "press_release",memory=press_memory)
+twitter_chain = LLMChain(llm=llm, prompt=twitter_template, verbose = True, output_key = "twitter",memory=twitter_memory)
+facebook_chain = LLMChain(llm=llm, prompt=facebook_template, verbose = True, output_key = "facebook",memory=facebook_memory)
+instagram_chain = LLMChain(llm=llm, prompt=instagram_template, verbose = True, output_key = "instagram",memory=instagram_memory)
 
 # App Framework
 #Color Palette 1: https://coolors.co/palette/cc8b86-f9eae1-7d4f50-d1be9c-aa998f
 #Color Palette 2: https://coolors.co/palette/e8d1c5-eddcd2-fff1e6-f0efeb-eeddd3-edede8
 st.title('Political Banter')
 st.header('Your go to generative AI solution for producing intelligent and informed political messaging.')
-st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
 st.write('Learn more about how Political Banter was developed in the side bar!')
 prompt = st.text_input('What Political Issue Should I Write About?')
 
 with st.sidebar:
-  st.image('Logo/Political Banter-logos_white.png')
+  st.image('Logo/Political Banter-logos_black.png')
+  st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
   st.markdown('Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
 
 #Returns response to prompt: What Political Issue Should I Write About?
 #Uses expanders and tabs to separate topics and data
-if prompt:
+if st.button('Submit'):
+    search = GoogleSearchAPIWrapper()
+    tool = Tool(
+    name="Google Search",
+    description="Search Google for recent results.",
+    func=search.run,
+    )
     wiki = WikipediaAPIWrapper()
     headline = headline_chain.run(prompt)
     wiki_research = wiki.run(prompt)
-    press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research)
-    twitter = twitter_chain.run(press_release=press_release,headline=headline,wikipedia_research=wiki_research)
-    facebook = facebook_chain.run(twitter=twitter,headline=headline,wikipedia_research=wiki_research)
-    instagram = instagram_chain.run(facebook=facebook,wikipedia_research=wiki_research)
-    tab1, tab2 = (st.tabs("Generative AI", "Data"))
+    google_research = tool.run
+    press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
+    twitter = twitter_chain.run(press_release=press_release,headline=headline,wikipedia_research=wiki_research,google=google_research)
+    facebook = facebook_chain.run(twitter=twitter,headline=headline,wikipedia_research=wiki_research,google=google_research)
+    instagram = instagram_chain.run(facebook=facebook,wikipedia_research=wiki_research,google=google_research)
+    tab1, tab2 = (st.tabs("Generative AI", "Fine Tuning Data"))
     tab1.write("Headline: " + headline)
+    with st.expander("Headline History"):
+      tab1.info(headline_memory.buffer)
     with st.expander("Press Release"):
       tab1.write(press_release)
+    with st.expander("Press Release History"):
+        st.info(press_memory.buffer)
     with st.expander("Tweet"):
       tab1.write(twitter)
+    with st.expander("Tweet History"):
+        st.info(twitter_memory.buffer)
     with st.expander("Facebook Post"):
       tab1.write(facebook)
+    with st.expander("Facebook Post History"):
+        st.info(facebook_memory.buffer)
     with st.expander("Instagram Post"):
       tab1.write(instagram)
+    with st.expander("Instagram Post History"):
+        st.info(instagram_memory.buffer)
+    with st.expander("Wikipedia Research History"):
+        st.info(google_research)
+    with st.expander("Google Research History"):
+        st.info(wiki_research)
+    
+    tab2.write("This data was used to fine tune the GenerativeAI Model and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
     tab2.write(data)
-
-    # with st.expander("Headline History"):
-    #     st.info(headline_memory.buffer)
-    # with st.expander("Press Release History"):
-    #     st.info(press_memory.buffer)
-    # with st.expander("Wikipedia Research History"):
-    #     st.info(wiki_research)
-    # with st.expander("Tweet History"):
-    #     st.info(twitter_memory.buffer)
-    # with st.expander("Facebook Post History"):
-    #     st.info(facebook_memory.buffer)
-    # with st.expander("Instagram Post History"):
-    #     st.info(instagram_memory.buffer)
+    
