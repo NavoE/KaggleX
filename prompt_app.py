@@ -32,12 +32,12 @@ data = pd.read_csv('political_social_media.csv', encoding_errors= "ignore")
 #Color Palette: https://coolors.co/palette/cc8b86-f9eae1-7d4f50-d1be9c-aa998f
 st.title('Political Banter')
 st.header('Your go to generative AI solution for producing intelligent and informed political messaging.')
-st.write('Learn more about how Political Banter was developed in the side bar!')
+st.write(':black[Learn more about how Political Banter was developed in the side bar!:]')
 prompt = st.text_input('What Political Issue Should I Wite About?')
 
 with st.sidebar:
   st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
-  st.text_area(label="Learn More Below", value='Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.', disabled=True)
+  st.text_area(height=50, label="Learn More Below", value='Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.', disabled=True)
 
 #Few Shot Prompts
 # The few shot prompts will guide the algorithm to craft a catchy political headline.
