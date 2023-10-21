@@ -36,8 +36,9 @@ st.write('Learn more about how Political Banter was developed in the side bar!')
 prompt = st.text_input('What Political Issue Should I Wite About?')
 
 with st.sidebar:
+  st.header("About")
   st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
-  st.text_area(height=50, label=":black[Learn More Below", value='Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.:]', disabled=True)
+  st.markdown('Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
 
 #Few Shot Prompts
 # The few shot prompts will guide the algorithm to craft a catchy political headline.
