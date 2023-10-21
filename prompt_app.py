@@ -28,19 +28,6 @@ data = pd.read_csv('political_social_media.csv', encoding_errors= "ignore")
 #Use to run Streamlit: python -m streamlit run prompt_app.py
 #Finetuning for Tone: https://blog.langchain.dev/chat-loaders-finetune-a-chatmodel-in-your-voice/
 
-# App Framework
-#Color Palette 1: https://coolors.co/palette/cc8b86-f9eae1-7d4f50-d1be9c-aa998f
-#Color Palette 2: https://coolors.co/palette/e8d1c5-eddcd2-fff1e6-f0efeb-eeddd3-edede8
-st.title('Political Banter')
-st.header('Your go to generative AI solution for producing intelligent and informed political messaging.')
-st.write('Learn more about how Political Banter was developed in the side bar!')
-prompt = st.text_input('What Political Issue Should I Wite About?')
-
-with st.sidebar:
-  st.header("About")
-  st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
-  st.markdown('Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
-
 #Few Shot Prompts
 # The few shot prompts will guide the algorithm to craft a catchy political headline.
 headline_examples = [
@@ -149,6 +136,7 @@ instagram_template = PromptTemplate(
 # instagram_memory = ConversationBufferMemory(input_key="facebook", memory_key="chat_history")
 
 #LLMs
+#Runs the Generative AI model using LangChain
 llm = ChatOpenAI(temperature=0.5, model = "ft:gpt-3.5-turbo-0613:personal::84XCwFjs")
 headline_chain = LLMChain(llm=llm, prompt=headline_prompt, verbose = True, output_key = "headline")
 press_chain = LLMChain(llm=llm, prompt=press_template, verbose = True, output_key = "press_release")
@@ -156,25 +144,41 @@ twitter_chain = LLMChain(llm=llm, prompt=twitter_template, verbose = True, outpu
 facebook_chain = LLMChain(llm=llm, prompt=facebook_template, verbose = True, output_key = "facebook")
 instagram_chain = LLMChain(llm=llm, prompt=instagram_template, verbose = True, output_key = "instagram")
 
-wiki = WikipediaAPIWrapper()
+# App Framework
+#Color Palette 1: https://coolors.co/palette/cc8b86-f9eae1-7d4f50-d1be9c-aa998f
+#Color Palette 2: https://coolors.co/palette/e8d1c5-eddcd2-fff1e6-f0efeb-eeddd3-edede8
+st.image('Logo/Political Banter-logos_transparent.png')
+st.title('Political Banter')
+st.header('Your go to generative AI solution for producing intelligent and informed political messaging.')
+st.write('Learn more about how Political Banter was developed in the side bar!')
+prompt = st.text_input('What Political Issue Should I Write About?')
 
-# Return response to prompt
+with st.sidebar:
+  st.header("About")
+  st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
+  st.markdown('Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
+
+#Returns response to prompt: What Political Issue Should I Write About?
+#Uses expanders and tabs to separate topics and data
 if prompt:
+    wiki = WikipediaAPIWrapper()
     headline = headline_chain.run(prompt)
     wiki_research = wiki.run(prompt)
     press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research)
     twitter = twitter_chain.run(press_release=press_release,headline=headline,wikipedia_research=wiki_research)
     facebook = facebook_chain.run(twitter=twitter,headline=headline,wikipedia_research=wiki_research)
     instagram = instagram_chain.run(facebook=facebook,wikipedia_research=wiki_research)
-    st.write("Headline: " + headline)
+    tab1, tab2 = (st.tabs("Generative AI", "Data"))
+    tab1.write("Headline: " + headline)
     with st.expander("Press Release"):
-      st.write("Press Release: " + press_release)
+      tab1.write(press_release)
     with st.expander("Tweet"):
-      st.write("Tweet: " + twitter)
+      tab1.write(twitter)
     with st.expander("Facebook Post"):
-      st.write("Facebook Post: " + facebook)
+      tab1.write(facebook)
     with st.expander("Instagram Post"):
-      st.write("Instagram Post: " + instagram)
+      tab1.write(instagram)
+    tab2.write(data)
 
     # with st.expander("Headline History"):
     #     st.info(headline_memory.buffer)
