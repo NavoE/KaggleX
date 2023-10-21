@@ -132,11 +132,11 @@ instagram_template = PromptTemplate(
 
 #Memory
 #Saves the chat history for the session
-headline_memory = ConversationBufferMemory(input_key="topic", memory_key="chat_history")
-press_memory = ConversationBufferMemory(input_key="headline", memory_key="chat_history")
-twitter_memory = ConversationBufferMemory(input_key="press_release", memory_key="chat_history")
-facebook_memory = ConversationBufferMemory(input_key="twitter", memory_key="chat_history")
-instagram_memory = ConversationBufferMemory(input_key="facebook", memory_key="chat_history")
+headline_memory = ConversationBufferMemory(input_key="topic", memory_key="chat_history", return_messages = True)
+press_memory = ConversationBufferMemory(input_key="headline", memory_key="chat_history", return_messages = True)
+twitter_memory = ConversationBufferMemory(input_key="press_release", memory_key="chat_history", return_messages = True)
+facebook_memory = ConversationBufferMemory(input_key="twitter", memory_key="chat_history", return_messages = True)
+instagram_memory = ConversationBufferMemory(input_key="facebook", memory_key="chat_history", return_messages = True)
 
 #LLMs
 #Runs the Generative AI model using LangChain
@@ -162,7 +162,7 @@ with st.sidebar:
 
 #Returns response to prompt: What Political Issue Should I Write About?
 #Uses expanders and tabs to separate topics and data
-if st.button('Submit'):
+if prompt:
     search = GoogleSearchAPIWrapper()
     tool = Tool(
     name="Google Search",
