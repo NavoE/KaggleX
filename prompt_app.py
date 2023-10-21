@@ -172,7 +172,7 @@ if prompt:
     wiki = WikipediaAPIWrapper()
     headline = headline_chain.run(prompt)
     wiki_research = wiki.run(prompt)
-    google_research = tool.run
+    google_research = search.run
     press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
     twitter = twitter_chain.run(press_release=press_release,headline=headline,wikipedia_research=wiki_research,google=google_research)
     facebook = facebook_chain.run(twitter=twitter,headline=headline,wikipedia_research=wiki_research,google=google_research)
@@ -188,7 +188,7 @@ if prompt:
       st.write(instagram)
     with st.expander("Wikipedia Research"):
         st.info(wiki_research)
-    with st.expander("Google Research History"):
+    with st.expander("Google Research"):
         st.info(google_research)
     st.write("This data was used to fine tune the GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
     st.write(data)
