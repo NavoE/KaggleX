@@ -31,9 +31,12 @@ data = pd.read_csv('political_social_media.csv', encoding_errors= "ignore")
 # App Framework
 st.title('Political Banter')
 st.header('Your go to generative AI solution for producing intelligent and informed political messaging.')
-st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
-st.text('Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
 prompt = st.text_input('What Political Issue Should I Wite About?')
+
+with st.sidebar.write('Learn more about how Political Banter was developed in the side bar!'):
+   st.sidebar.button("Expand")
+   st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
+   st.text('Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
 
 #Few Shot Prompts
 # The few shot prompts will guide the algorithm to craft a catchy political headline.
@@ -162,10 +165,14 @@ if prompt:
     instagram = instagram_chain.run(facebook=facebook,wikipedia_research=wiki_research)
     col1, col2, col3, col4 = st.columns([3,1,1,1])
     st.write("Headline: " + headline)
-    col1.write("Press Release: " + press_release)
-    col2.write("Tweet: " + twitter)
-    col3.write("Facebook Post: " + facebook)
-    col4.write("Instagram Post: " + instagram)
+    with st.expander("Press Release"):
+      col1.write("Press Release: " + press_release)
+    with st.expander("Tweet"):
+      col2.write("Tweet: " + twitter)
+    with st.expander("Facebook Post"):
+      col3.write("Facebook Post: " + facebook)
+    with st.expander("Instagram Post"):
+      col4.write("Instagram Post: " + instagram)
 
     # with st.expander("Headline History"):
     #     st.info(headline_memory.buffer)
