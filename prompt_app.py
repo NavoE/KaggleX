@@ -123,7 +123,7 @@ press_template = PromptTemplate(
 
 twitter_template = PromptTemplate(
     input_variables = ["press_release"],
-    template = 'write me a twitter post based on this press release written by a politician using the tweets that are in the text column of this data' +  data' : {press_release}'
+    template = 'write me a twitter post based on this press release written by a politician using the tweets that are in the text column of this data' +  data['text']' : {press_release}'
 )
 
 facebook_template = PromptTemplate(
