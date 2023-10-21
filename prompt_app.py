@@ -31,7 +31,7 @@ data = pd.read_csv('political_social_media.csv', encoding_errors= "ignore")
 # App Framework
 st.title('Political Banter')
 st.header('Your go to generative AI solution for producing intelligent and informed political messaging.')
-st.sidebar.write('Learn more about how Political Banter was developed in the side bar!')
+st.write('Learn more about how Political Banter was developed in the side bar!')
 prompt = st.text_input('What Political Issue Should I Wite About?')
 
 with st.sidebar:
