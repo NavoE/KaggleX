@@ -166,16 +166,15 @@ if prompt:
     twitter = twitter_chain.run(press_release=press_release,headline=headline,wikipedia_research=wiki_research)
     facebook = facebook_chain.run(twitter=twitter,headline=headline,wikipedia_research=wiki_research)
     instagram = instagram_chain.run(facebook=facebook,wikipedia_research=wiki_research)
-    col1, col2, col3, col4 = st.columns([3,1,1,1])
     st.write("Headline: " + headline)
     with st.expander("Press Release"):
-      col1.write("Press Release: " + press_release)
+      st.write("Press Release: " + press_release)
     with st.expander("Tweet"):
-      col2.write("Tweet: " + twitter)
+      st.write("Tweet: " + twitter)
     with st.expander("Facebook Post"):
-      col3.write("Facebook Post: " + facebook)
+      st.write("Facebook Post: " + facebook)
     with st.expander("Instagram Post"):
-      col4.write("Instagram Post: " + instagram)
+      st.write("Instagram Post: " + instagram)
 
     # with st.expander("Headline History"):
     #     st.info(headline_memory.buffer)
