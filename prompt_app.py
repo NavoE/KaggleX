@@ -200,6 +200,6 @@ if prompt:
         st.info(google_research)
     with st.expander("Wikipedia Research"):
         st.info(wiki_research)
-    st.write("This data was used to fine tune the GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
+    st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
     st.write(data)
     
