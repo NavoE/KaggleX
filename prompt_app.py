@@ -180,7 +180,7 @@ if st.button('Submit'):
     tab1, tab2 = (st.tabs("Generative AI", "Fine Tuning Data"))
     tab1.write("Headline: " + headline)
     with st.expander("Headline History"):
-      tab1.info(headline_memory.buffer)
+      st.info(headline_memory.buffer)
     with st.expander("Press Release"):
       tab1.write(press_release)
     with st.expander("Press Release History"):
