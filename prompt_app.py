@@ -151,14 +151,13 @@ instagram_chain = LLMChain(llm=llm, prompt=instagram_template, verbose = True, o
 #Color Palette 1: https://coolors.co/palette/cc8b86-f9eae1-7d4f50-d1be9c-aa998f
 #Color Palette 2: https://coolors.co/palette/e8d1c5-eddcd2-fff1e6-f0efeb-eeddd3-edede8
 st.image('Logo/Political Banter-logos_transparent.png')
-st.title('Political Banter')
 st.header('The Next Generation of Political Tech')
 st.write('Learn more about how Political Banter was developed in the side bar!')
 prompt = st.text_input('What Political Issue Should I Write About?')
 
 with st.sidebar:
   st.title('Political Banter')
-  st.subheader('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
+  st.header('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
   st.markdown('Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
 
 #Returns response to prompt: What Political Issue Should I Write About?
