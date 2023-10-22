@@ -157,9 +157,9 @@ prompt = st.text_input('What Political Issue Should I Write About?')
 
 with st.sidebar:
   st.title('About Political Banter')
-  st.header('Using this tool is as simple as telling the Political Banter tool what you want it to write about.')
-  st.markdown('Political Banter was created by finetuning an OpenAi chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft a catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
-
+  st.header('Using this tool is as simple as telling Political Banter what political issues you want it to write about.')
+  st.markdown('Political Banter was created by finetuning an OpenAI chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
+  st.write('Learn more about the Kaggle dataset that was used to inform the tone and voice used by Political Banter via the following link: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download')
 #Returns response to prompt: What Political Issue Should I Write About?
 #Uses expanders and tabs to separate topics and data
 if prompt:
