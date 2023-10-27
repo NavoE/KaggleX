@@ -252,8 +252,6 @@ if prompt:
           st.info(google_research)
       with st.expander("Wikipedia Research"):
           st.info(wiki_research)
-      st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
-      st.write(data)
     
     #Feeds prompts into OpenAI LLM chains
     #Adds returned results to tab 1 and uses expanders to separate topics
@@ -277,14 +275,10 @@ if prompt:
         st.write(instagram2)
       # with st.expander("Instagram Post History"):
       #     st.info(instagram_memory.buffer)
-      with st.expander("Google Research"):
-          st.info(google_research)
-      with st.expander("Wikipedia Research"):
-          st.info(wiki_research)
-      st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
       
     with tab3: 
-       st.write(data)
+      st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
+      st.write(data)
 
 
         
