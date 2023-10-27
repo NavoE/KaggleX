@@ -133,8 +133,8 @@ instagram_template = PromptTemplate(
 
 #Prompt Templates for Baseline Outputs
 headline_prompt2 = PromptTemplate(
-    input_variables = ["headline2"],
-    template = 'I want you to act as a politician. You will research and analyze cultural, economic, political, and social events in the past, collect data from primary sources and use it to develop a press release about what happened during various periods of history. My first suggestion request is: write me a press release based on this headline: {headline2}'
+    input_variables = ["input"],
+    template = 'I want you to act as a politician. You will research and analyze cultural, economic, political, and social events in the past, collect data from primary sources and use it to develop a press release about what happened during various periods of history. My first suggestion request is: write me a press release based on this headline: {input}'
 )
 
 press_template2 = PromptTemplate(
@@ -190,6 +190,7 @@ st.image('Logo/Political Banter-logos_transparent.png')
 st.header('The Next Generation of Political Tech')
 st.write('Learn more about Political Banter in the side bar!')
 prompt = st.text_input('What Political Issue Should I Write About?')
+st.button("Generate Content", type="primary")
 
 #Creates sidebar
 with st.sidebar:
@@ -200,85 +201,89 @@ with st.sidebar:
 
 #Returns response to prompt: What Political Issue Should I Write About?
 #Creates wikipedia and google search instances
-if prompt:
-    search = GoogleSearchAPIWrapper()
-    tool = Tool(
-    name="Google Search",
-    description="Search Google for recent results.",
-    func=search.run,
-    )
-    wiki = WikipediaAPIWrapper()
-    wiki_research = wiki.run(prompt)
-    google_research = tool.run(prompt)
-    
+
+search = GoogleSearchAPIWrapper()
+tool = Tool(
+name="Google Search",
+description="Search Google for recent results.",
+func=search.run,
+)
+wiki = WikipediaAPIWrapper()
+wiki_research = wiki.run(prompt)
+google_research = tool.run(prompt)
+
+#Feeds prompts into OpenAI LLM chains
+headline = headline_chain.run(prompt)
+press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
+twitter = twitter_chain.run(press_release=press_release,headline=headline)
+facebook = facebook_chain.run(twitter=twitter,headline=headline)
+instagram = instagram_chain.run(facebook=facebook,headline=headline)
+
+headline2 = headline_chain2.run(prompt)
+press_release2 = press_chain2.run(headline2=headline2)
+twitter2 = twitter_chain2.run(press_release2=press_release2,headline2=headline2)
+facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
+instagram2 = instagram_chain2.run(facebook2=facebook2,headline2=headline2)
+
+#Creates tabs to separate app features
+tab1, tab2, tab3 = st.tabs(['Enhanced','Baseline','Data'])
+
+#Runs button to generate content
+if st.button:
+  #Adds returned results to tab 1 and uses expanders to separate topics
+  with tab1:
+    st.write("Headline: " + headline)
+    # with st.expander("Headline History"):
+    #   st.info(headline_memory.buffer)
+    with st.expander("Press Release"):
+      st.write(press_release)
+    # with st.expander("Press Release History"):
+    #     st.info(press_memory.buffer)
+    with st.expander("Tweet"):
+      st.write(twitter)
+    # with st.expander("Tweet History"):
+    #     st.info(twitter_memory.buffer)
+    with st.expander("Facebook Post"):
+      st.write(facebook)
+    # with st.expander("Facebook Post History"):
+    #     st.info(facebook_memory.buffer)
+    with st.expander("Instagram Post"):
+      st.write(instagram)
+    # with st.expander("Instagram Post History"):
+    #     st.info(instagram_memory.buffer)
+    with st.expander("Google Research"):
+        st.info(google_research)
+    with st.expander("Wikipedia Research"):
+        st.info(wiki_research)
+
     #Feeds prompts into OpenAI LLM chains
-    headline = headline_chain.run(prompt)
-    press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
-    twitter = twitter_chain.run(press_release=press_release,headline=headline)
-    facebook = facebook_chain.run(twitter=twitter,headline=headline)
-    instagram = instagram_chain.run(facebook=facebook,headline=headline)
-
-    headline2 = headline_chain2.run(prompt)
-    press_release2 = press_chain2.run(headline2=headline2)
-    twitter2 = twitter_chain2.run(press_release2=press_release2,headline2=headline2)
-    facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
-    instagram2 = instagram_chain2.run(facebook2=facebook2,headline2=headline2)
-    
-    #Creates tabs to separate app features
-    tab1, tab2, tab3 = st.tabs(['Enhanced','Baseline','Data'])
-
     #Adds returned results to tab 1 and uses expanders to separate topics
-    with tab1:
-      st.write("Headline: " + headline)
-      # with st.expander("Headline History"):
-      #   st.info(headline_memory.buffer)
-      with st.expander("Press Release"):
-        st.write(press_release)
-      # with st.expander("Press Release History"):
-      #     st.info(press_memory.buffer)
-      with st.expander("Tweet"):
-        st.write(twitter)
-      # with st.expander("Tweet History"):
-      #     st.info(twitter_memory.buffer)
-      with st.expander("Facebook Post"):
-        st.write(facebook)
-      # with st.expander("Facebook Post History"):
-      #     st.info(facebook_memory.buffer)
-      with st.expander("Instagram Post"):
-        st.write(instagram)
-      # with st.expander("Instagram Post History"):
-      #     st.info(instagram_memory.buffer)
-      with st.expander("Google Research"):
-          st.info(google_research)
-      with st.expander("Wikipedia Research"):
-          st.info(wiki_research)
-    
-    #Feeds prompts into OpenAI LLM chains
-    #Adds returned results to tab 1 and uses expanders to separate topics
-    with tab2:
-      st.write("Headline: " + headline2)
-      # with st.expander("Headline History"):
-      #   st.info(headline_memory.buffer)
-      with st.expander("Press Release"):
-        st.write(press_release2)
-      # with st.expander("Press Release History"):
-      #     st.info(press_memory.buffer)
-      with st.expander("Tweet"):
-        st.write(twitter2)
-      # with st.expander("Tweet History"):
-      #     st.info(twitter_memory.buffer)
-      with st.expander("Facebook Post"):
-        st.write(facebook2)
-      # with st.expander("Facebook Post History"):
-      #     st.info(facebook_memory.buffer)
-      with st.expander("Instagram Post"):
-        st.write(instagram2)
-      # with st.expander("Instagram Post History"):
-      #     st.info(instagram_memory.buffer)
-      
-    with tab3: 
-      st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
-      st.write(data)
-
-
+    if tab2:
+      with tab2:
+        st.write("Headline: " + headline2)
+        # with st.expander("Headline History"):
+        #   st.info(headline_memory.buffer)
+        with st.expander("Press Release"):
+          st.write(press_release2)
+        # with st.expander("Press Release History"):
+        #     st.info(press_memory.buffer)
+        with st.expander("Tweet"):
+          st.write(twitter2)
+        # with st.expander("Tweet History"):
+        #     st.info(twitter_memory.buffer)
+        with st.expander("Facebook Post"):
+          st.write(facebook2)
+        # with st.expander("Facebook Post History"):
+        #     st.info(facebook_memory.buffer)
+        with st.expander("Instagram Post"):
+          st.write(instagram2)
+        # with st.expander("Instagram Post History"):
+        #     st.info(instagram_memory.buffer)
         
+    if tab3:
+      with tab3: 
+        st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
+        st.write(data)
+
+
+            
