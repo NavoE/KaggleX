@@ -190,7 +190,6 @@ st.image('Logo/Political Banter-logos_transparent.png')
 st.header('The Next Generation of Political Tech')
 st.write('Learn more about Political Banter in the side bar!')
 prompt = st.text_input('What Political Issue Should I Write About?')
-st.button("Generate Content", type="primary")
 
 #Creates sidebar
 with st.sidebar:
@@ -229,7 +228,7 @@ instagram2 = instagram_chain2.run(facebook2=facebook2,headline2=headline2)
 tab1, tab2, tab3 = st.tabs(['Enhanced','Baseline','Data'])
 
 #Runs button to generate content
-if st.button:
+if st.button("Generate Content", type="primary"):
   #Adds returned results to tab 1 and uses expanders to separate topics
   with tab1:
     st.write("Headline: " + headline)
