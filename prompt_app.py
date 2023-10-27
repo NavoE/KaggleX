@@ -188,7 +188,7 @@ instagram_chain2 = LLMChain(llm=llm2, prompt=instagram_template2, verbose = True
 #Color Palette 2: https://coolors.co/palette/e8d1c5-eddcd2-fff1e6-f0efeb-eeddd3-edede8
 st.image('Logo/Political Banter-logos_transparent.png')
 st.header('The Next Generation of Political Tech')
-st.write('Learn more about how Political Banter was developed in the side bar!')
+st.write('Learn more about Political Banter in the side bar!')
 prompt = st.text_input('What Political Issue Should I Write About?')
 
 #Creates sidebar
@@ -196,7 +196,7 @@ with st.sidebar:
   st.title('About Political Banter')
   st.header('Using this tool is as simple as telling Political Banter what political issues you want it to write about.')
   st.markdown('Political Banter was created by finetuning an OpenAI chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
-  st.write('Learn more about the Kaggle dataset that was used to inform the tone and voice used by Political Banter via the following link: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download')
+  st.write('Learn more about the Kaggle dataset that was used to inform the tone and voice of Political Banter via the following link: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download')
 
 #Returns response to prompt: What Political Issue Should I Write About?
 #Creates wikipedia and google search instances
@@ -214,15 +214,15 @@ if prompt:
     #Feeds prompts into OpenAI LLM chains
     headline = headline_chain.run(prompt)
     press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
-    twitter = twitter_chain.run(press_release=press_release,headline=headline,wikipedia_research=wiki_research,google=google_research)
-    facebook = facebook_chain.run(twitter=twitter,headline=headline,press_release=press_release, wikipedia_research=wiki_research,google=google_research)
-    instagram = instagram_chain.run(facebook=facebook,twitter=twitter,headline=headline,press_release=press_release,wikipedia_research=wiki_research,google=google_research)
+    twitter = twitter_chain.run(press_release=press_release,headline=headline)
+    facebook = facebook_chain.run(twitter=twitter,headline=headline)
+    instagram = instagram_chain.run(facebook=facebook,headline=headline)
 
     headline2 = headline_chain2.run(prompt)
     press_release2 = press_chain2.run(headline2=headline2)
     twitter2 = twitter_chain2.run(press_release2=press_release2,headline2=headline2)
-    facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2,press_release2=press_release2)
-    instagram2 = instagram_chain2.run(facebook2=facebook2,twitter2=twitter2,headline2=headline2,press_release2=press_release2)
+    facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
+    instagram2 = instagram_chain2.run(facebook2=facebook2,headline2=headline2)
     
     #Creates tabs to separate app features
     tab1, tab2, tab3 = st.tabs(['Enhanced','Baseline','Data'])
