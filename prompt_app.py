@@ -204,6 +204,13 @@ def generate_fine(prompt):
     twitter = twitter_chain.run(press_release=press_release,headline=headline)
     facebook = facebook_chain.run(twitter=twitter,headline=headline)
     instagram = instagram_chain.run(facebook=facebook,headline=headline)
+
+    #Uses session state to store variables
+    st.session_state.headline_id = headline
+    st.session_state.press_id = press_release
+    st.session_state.twitter_id = twitter
+    st.session_state.facebook_id = facebook
+    st.session_state.instagram_id = instagram
     return headline, press_release, twitter, facebook, instagram, google_research, wiki_research
 
 #Create function to generate default content
@@ -216,6 +223,13 @@ def generate_default(prompt):
   twitter2 = twitter_chain2.run(press_release2=press_release2,headline2=headline2)
   facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
   instagram2 = instagram_chain2.run(facebook2=facebook2,headline2=headline2)
+
+  #Uses session state to store variables
+  st.session_state.headline2_id = headline2
+  st.session_state.press2_id = press_release2
+  st.session_state.twitter2_id = twitter2
+  st.session_state.facebook2_id = facebook2
+  st.session_state.instagram2_id = instagram2
   return headline2, press_release2, twitter2, facebook2, instagram2
 
 
@@ -275,7 +289,7 @@ model = st.radio(
   captions = ["Includes Fine-Tuned OpenAI Model and Few Shot Prompts","Uses Default OpenAI Model and Basic Prompts"]
 )
 
-st.write('Please do not change the settings until after the content is generated. Otherwise, your content will not be generated')
+st.write('Please do not change the settings until after the content is generated. Otherwise, your content will not be generated.')
 
 #Creates tabs to separate app features
 tab1, tab2, tab3 = st.tabs(['Political Banter','Default','Data'])
@@ -289,13 +303,6 @@ with tab1:
     if finebutton:
       if prompt:
           headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
-          #Uses session state to store variables
-          st.session_state.headline_id = headline
-          st.session_state.press_id = press_release
-          st.session_state.twitter_id = twitter
-          st.session_state.facebook_id = facebook
-          st.session_state.instagram_id = instagram
-
           #Adds returned results to tab 1 and uses expanders to separate topics
           st.write("Headline: " + headline)
           # with st.expander("Headline History"):
@@ -332,12 +339,6 @@ with tab2:
     if defbutton:
       if prompt:
         headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
-        #Uses session state to store variables
-        st.session_state.headline2_id = headline2
-        st.session_state.press2_id = press_release2
-        st.session_state.twitter2_id = twitter2
-        st.session_state.facebook2_id = facebook2
-        st.session_state.instagram2_id = instagram2
         #Adds returned results to tab 1 and uses expanders to separate topics
         with tab2:
           st.write("Headline: " + headline2)
