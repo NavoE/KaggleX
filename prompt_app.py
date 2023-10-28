@@ -198,23 +198,39 @@ with st.sidebar:
   st.markdown('Political Banter was created by finetuning an OpenAI chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
   st.write('Learn more about the Kaggle dataset that was used to inform the tone and voice of Political Banter via the following link: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download')
 
-#Creates tabs to separate app features
-tab1, tab2 = st.tabs(['Political Banter','Data'])
+# Store the initial value of widgets in session state
+if "finetuned" not in st.session_state:
+    st.session_state.finetuned = "Fine-Tuned OpenAI Model"
+    st.session_state.default = "Default OpenAI Model"
 
+def set_finetuned():
+  st.session_state.finetuned = st.session_state.set_fine
+def set_default():
+  st.session_state.default = st.session_state.set_def
+    
 #Creates radio button widget 
 model = st.radio(
   "Which GenAI model would you like to use?",
-  ["Fine-Tuned OpenAI Model","Default OpenAI Model"],
+  options = ["Fine-Tuned OpenAI Model","Default OpenAI Model"],
   captions = ["Includes Fine-Tuned OpenAI Model and Few Shot Prompts","Uses Default OpenAI Model and Basic Prompts"]
 )
+
 #Creates button for generating content
 button = st.button("Generate Content", type='primary')
+
+#Creates tabs to separate app features
+tab1, tab2 = st.tabs(['Political Banter','Data'])
 
 #Selects which model to run
 if model == "Fine-Tuned OpenAI Model":
   #Runs button to generate content
   if button:
     if prompt:
+      st.session_state.finetuned = prompt(
+      key='fine', 
+      value=st.session_state.finetuned,
+      on_change=set_finetuned
+      )
       #Returns response to prompt: What Political Issue Should I Write About?
       #Creates wikipedia and google search instances
       search = GoogleSearchAPIWrapper()
@@ -263,10 +279,15 @@ if model == "Fine-Tuned OpenAI Model":
             st.info(wiki_research)
 
 #Selects which model to run
-if model == "Fine-Tuned OpenAI Model":
+elif model == "Fine-Tuned OpenAI Model":
   #Runs button to generate content
   if button:
     if prompt:
+      st.session_state.default = prompt(
+      key='def', 
+      value=st.session_state.default,
+      on_change=set_default
+      )
       #Returns response to prompt: What Political Issue Should I Write About?
       #Feeds prompts into OpenAI LLM chains
       headline2 = headline_chain2.run(prompt)
