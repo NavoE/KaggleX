@@ -217,7 +217,7 @@ with tab1:
           if prompt:
             headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
             finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
-      elif model == "Default OpenAI Model":
+      if model == "Default OpenAI Model":
       #Creates button for generating content
         defbutton = st.form_submit_button("Generate Default Content")
         #Runs button to generate content
