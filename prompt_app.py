@@ -223,14 +223,14 @@ tab1, tab2 = st.tabs(['Political Banter','Data'])
 #Selects which model to run
 if model == "Fine-Tuned OpenAI Model":
   if prompt:
-    #Creates button for generating content
-    st.session_state.finetuned = st.button(
-    "Generate Content", 
-    type='primary',
-    key='fine', 
-    value=st.session_state.finetuned,
-    on_click=set_finetuned
-    )
+    # #Creates button for generating content
+    # st.session_state.finetuned = st.button(
+    # "Generate Content", 
+    # type='primary',
+    # key='fine', 
+    # value=st.session_state.finetuned,
+    # on_click=set_finetuned
+    # )
     #Returns response to prompt: What Political Issue Should I Write About?
     #Creates wikipedia and google search instances
     search = GoogleSearchAPIWrapper()
@@ -281,14 +281,14 @@ if model == "Fine-Tuned OpenAI Model":
 #Selects which model to run
 elif model == "Fine-Tuned OpenAI Model":
     if prompt:
-      #Creates button for generating content
-      st.session_state.finetuned = st.button(
-      "Generate Content", 
-      type='primary',
-      key='fine', 
-      value=st.session_state.finetuned,
-      on_click=set_finetuned
-      )
+      # #Creates button for generating content
+      # st.session_state.finetuned = st.button(
+      # "Generate Content", 
+      # type='primary',
+      # key='fine', 
+      # value=st.session_state.finetuned,
+      # on_click=set_finetuned
+      # )
       #Returns response to prompt: What Political Issue Should I Write About?
       #Feeds prompts into OpenAI LLM chains
       headline2 = headline_chain2.run(prompt)
