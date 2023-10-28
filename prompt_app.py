@@ -226,6 +226,7 @@ st.write('Please do not change the settings until after the content is generated
 tab1, tab2, tab3 = st.tabs(['Political Banter','Default','Data'])
 
 #Selects which model to run and generate on tab 1
+store_finetuning = None
 with tab1:
   if model == "Fine-Tuned OpenAI Model":
     #Creates button for generating content
@@ -236,12 +237,13 @@ with tab1:
         headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
         store_finetuning = finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
   store_finetuning
-  
+
   if model == "Default OpenAI Model":
     st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
     store_finetuning
 
 #Selects which model to run and generate on tab 2
+store_default = None
 with tab2:
   if model == "Default OpenAI Model":
     #Creates button for generating content
