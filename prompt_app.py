@@ -166,9 +166,8 @@ with st.sidebar:
   st.header('Using this tool is as simple as telling Political Banter what political issues you want it to write about.')
   st.markdown('Political Banter was created by finetuning an OpenAI chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
   st.write('Learn more about the Kaggle dataset that was used to inform the tone and voice used by Political Banter via the following link: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download')
-#Returns response to prompt: What Political Issue Should I Write About?
-#Uses expanders and tabs to separate topics and data
 
+#Returns response to prompt: What Political Issue Should I Write About?
 if button:
   if prompt:
     search = GoogleSearchAPIWrapper()
@@ -186,7 +185,8 @@ if button:
     facebook = facebook_chain.run(twitter=twitter,headline=headline,wikipedia_research=wiki_research,google=google_research)
     instagram = instagram_chain.run(facebook=facebook,wikipedia_research=wiki_research,google=google_research)
     st.write("Headline: " + headline)
-
+    
+    #Uses expanders and tabs to separate topics and data
     with tab1:
       # with st.expander("Headline History"):
       #   st.info(headline_memory.buffer)
@@ -213,6 +213,8 @@ if button:
       st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
       st.write(data)
     
-with tab2:
-  st.write("Hello")
+#Adds data table to tab 2
+with tab2: 
+  st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
+  st.write(data)
        
