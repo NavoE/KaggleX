@@ -261,10 +261,6 @@ if model == "Fine-Tuned OpenAI Model":
             st.info(google_research)
         with st.expander("Wikipedia Research"):
             st.info(wiki_research)
-      with tab2: 
-        st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
-        st.write(data)
-
 
 #Selects which model to run
 if model == "Fine-Tuned OpenAI Model":
@@ -300,10 +296,8 @@ if model == "Fine-Tuned OpenAI Model":
           st.write(instagram2)
         # with st.expander("Instagram Post History"):
         #     st.info(instagram_memory.buffer)
-        
-      with tab2: 
-        st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
-        st.write(data)
 
-
-            
+#Adds data table to tab 2
+with tab2: 
+  st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
+  st.write(data)
