@@ -190,7 +190,6 @@ st.image('Logo/Political Banter-logos_transparent.png')
 st.header('The Next Generation of Political Tech')
 st.write('Learn more about Political Banter in the side bar!')
 prompt = st.text_input('What Political Issue Should I Write About?')
-button = st.button("Generate Content", type='primary')
 
 #Creates sidebar
 with st.sidebar:
@@ -198,34 +197,6 @@ with st.sidebar:
   st.header('Using this tool is as simple as telling Political Banter what political issues you want it to write about.')
   st.markdown('Political Banter was created by finetuning an OpenAI chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
   st.write('Learn more about the Kaggle dataset that was used to inform the tone and voice of Political Banter via the following link: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download')
-
-#Returns response to prompt: What Political Issue Should I Write About?
-#Creates wikipedia and google search instances
-
-search = GoogleSearchAPIWrapper()
-tool = Tool(
-name="Google Search",
-description="Search Google for recent results.",
-func=search.run,
-)
-wiki = WikipediaAPIWrapper()
-headline = headline_chain.run(prompt)
-headline2 = headline_chain2.run(prompt)
-wiki_research = wiki.run(prompt)
-google_research = tool.run(prompt)
-
-#Feeds prompts into OpenAI LLM chains
-headline = headline_chain.run(prompt)
-press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
-twitter = twitter_chain.run(press_release=press_release,headline=headline)
-facebook = facebook_chain.run(twitter=twitter,headline=headline)
-instagram = instagram_chain.run(facebook=facebook,headline=headline)
-
-headline2 = headline_chain2.run(prompt)
-press_release2 = press_chain2.run(headline2=headline2)
-twitter2 = twitter_chain2.run(press_release2=press_release2,headline2=headline2)
-facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
-instagram2 = instagram_chain2.run(facebook2=facebook2,headline2=headline2)
 
 #Creates tabs to separate app features
 tab1, tab2 = st.tabs(['Political Banter','Data'])
@@ -240,8 +211,30 @@ model = st.radio(
 #Selects which model to run
 if model == "Fine-Tuned OpenAI Model":
   #Runs button to generate content
+  button = st.button("Generate Content", type='primary')
   if button:
     if prompt:
+      #Returns response to prompt: What Political Issue Should I Write About?
+      #Creates wikipedia and google search instances
+      search = GoogleSearchAPIWrapper()
+      tool = Tool(
+      name="Google Search",
+      description="Search Google for recent results.",
+      func=search.run,
+      )
+      wiki = WikipediaAPIWrapper()
+      headline = headline_chain.run(prompt)
+      headline2 = headline_chain2.run(prompt)
+      wiki_research = wiki.run(prompt)
+      google_research = tool.run(prompt)
+
+      #Feeds prompts into OpenAI LLM chains
+      headline = headline_chain.run(prompt)
+      press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
+      twitter = twitter_chain.run(press_release=press_release,headline=headline)
+      facebook = facebook_chain.run(twitter=twitter,headline=headline)
+      instagram = instagram_chain.run(facebook=facebook,headline=headline)
+
       #Adds returned results to tab 1 and uses expanders to separate topics
       with tab1:
         st.write("Headline: " + headline)
@@ -275,8 +268,17 @@ if model == "Fine-Tuned OpenAI Model":
 #Selects which model to run
 if model == "Fine-Tuned OpenAI Model":
   #Runs button to generate content
+  button = st.button("Generate Content", type='primary')
   if button:
     if prompt:
+      #Returns response to prompt: What Political Issue Should I Write About?
+      #Feeds prompts into OpenAI LLM chains
+      headline2 = headline_chain2.run(prompt)
+      press_release2 = press_chain2.run(headline2=headline2)
+      twitter2 = twitter_chain2.run(press_release2=press_release2,headline2=headline2)
+      facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
+      instagram2 = instagram_chain2.run(facebook2=facebook2,headline2=headline2)
+
       #Adds returned results to tab 1 and uses expanders to separate topics
       with tab1:
         st.write("Headline: " + headline2)
