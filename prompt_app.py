@@ -243,7 +243,7 @@ tab1, tab2, tab3 = st.tabs(['Political Banter','Baseline','Data'])
 #Selects which model to run
 if model == "Fine-Tuned OpenAI Model":
   #Creates button for generating content
-  button = st.button("Generate Content", type='primary',on_click=prompt)
+  button = st.button("Generate Content", type='primary')
   #Runs button to generate content
   if button:
     if prompt:
@@ -304,7 +304,7 @@ if model == "Fine-Tuned OpenAI Model":
 #Selects which model to run
 elif model == "Default OpenAI Model":
   #Creates button for generating content
-  button = st.button("Generate Content", type='primary',on_click=prompt)
+  button = st.button("Generate Content", type='primary')
   #Runs button to generate content
   if button:
     if prompt:
