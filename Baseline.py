@@ -3,7 +3,7 @@ from langchain.prompts import PromptTemplate
 #Prompt Templates for Baseline Outputs
 headline_prompt2 = PromptTemplate(
     input_variables = ["input"],
-    template = 'I want you to act as a politician. You will research and analyze cultural, economic, political, and social events in the past, collect data from primary sources and use it to develop a press release about what happened during various periods of history. My first suggestion request is: write me a press release based on this headline: {input}'
+    template = 'I want you to act as a politician. You will research and analyze cultural, economic, political, and social events in the past, collect data from primary sources and use it to develop a headline about what happened during various periods of history. My first suggestion request is: write me a headline based on this input: {input}'
 )
 
 press_template2 = PromptTemplate(
