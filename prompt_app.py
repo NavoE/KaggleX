@@ -195,38 +195,47 @@ with st.sidebar:
   st.markdown('Political Banter was created by finetuning an OpenAI chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional prompting was also used to guide the algorithm to craft catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
   st.write('Learn more about the Kaggle dataset that was used to inform the tone and voice of Political Banter via the following link: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download')
 
-st.write('Please do not change the settings until after the content is generated. Otherwise, your content will not be generated.')
+#Creates radio button widget 
+# model = st.radio(
+#   "Which GenAI model would you like to use?",
+#   ["Fine-Tuned OpenAI Model","Default OpenAI Model"],
+#   captions = ["Includes Fine-Tuned OpenAI Model and Few Shot Prompts","Uses Default OpenAI Model and Basic Prompts"]
+# )
+
+# st.write('Please do not change the settings until after the content is generated. Otherwise, your content will not be generated.')
 
 #Creates tabs to separate app features
-tab1, tab2 = st.tabs(['Political Banter','Data'])
+tab1, tab2, tab3 = st.tabs(['Political Banter','Default','Data'])
 
 #Runs finetuned model and generates outputs onto tab 1
 with tab1:
-  with st.form("Political Banter Form"):
-      #Creates radio button widget 
-      model = st.radio(
-        "Which GenAI model would you like to use?",
-        ["Fine-Tuned OpenAI Model","Default OpenAI Model"],
-        captions = ["Includes Fine-Tuned OpenAI Model and Few Shot Prompts","Uses Default OpenAI Model and Basic Prompts"]
-      )
-      if model == "Fine-Tuned OpenAI Model":
-        #Creates button for generating content
-        finebutton = st.form_submit_button("Generate Fine-Tuned Content")
-          #Runs button to generate content
-        if finebutton:
-          if prompt:
-            headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
-            finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
-      else:
+  with st.form("Fine-Tuning Form"):
+    # if model == "Fine-Tuned OpenAI Model":
       #Creates button for generating content
-        defbutton = st.form_submit_button("Generate Default Content")
-        #Runs button to generate content
-        if defbutton:
-          if prompt:
-            headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
-            defstate(headline2, press_release2, twitter2, facebook2, instagram2)
+      finebutton = st.form_submit_button("Generate Fine-Tuned Content", type='primary')
+      #Runs button to generate content
+      if finebutton:
+        if prompt:
+          headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
+          finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
+    # else:
+    #     st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
 
-#Adds data table to tab 2
-with tab2: 
+#Runs default model and generates outputs onto tab 2
+with tab2:
+  with st.form("Default Form"):
+    # if model == "Default OpenAI Model":
+      #Creates button for generating content
+      defbutton = st.form_submit_button("Generate Default Content", type='primary')
+      #Runs button to generate content
+      if defbutton:
+        if prompt:
+          headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
+          defstate(headline2, press_release2, twitter2, facebook2, instagram2)
+    # else:
+    #   st.write("Please select the Default OpenAI Model setting to generate new content") 
+
+#Adds data table to tab 3
+with tab3: 
   st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
   st.write(data)
