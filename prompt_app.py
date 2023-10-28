@@ -246,7 +246,6 @@ with tab2:
     if defbutton:
       if prompt:
         headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
-        defstate(headline2, press_release2, twitter2, facebook2, instagram2)
   else:
     st.write("Please select the Default OpenAI Model setting to generate new content")
     
