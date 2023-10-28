@@ -225,7 +225,7 @@ with tab1:
 
 #Runs default model and generates outputs onto tab 2
 with tab2:
-  with st.form("Fine-Tuning Form"):
+  with st.form("Default Form"):
     if model == "Default OpenAI Model":
       #Creates button for generating content
       defbutton = st.form_submit_button("Generate Default Content", type='primary')
