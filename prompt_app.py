@@ -165,27 +165,18 @@ instagram_template2 = PromptTemplate(
 # facebook_memory = ConversationBufferMemory(input_key="twitter", memory_key="chat_history", return_messages = True)
 # instagram_memory = ConversationBufferMemory(input_key="facebook", memory_key="chat_history", return_messages = True)
 
-#LLMs
-#Runs the Generative AI model using LangChain using fine-tuned data and few shot prompting
-llm = ChatOpenAI(temperature=0.5, model = "ft:gpt-3.5-turbo-0613:personal::84XCwFjs")
-headline_chain = LLMChain(llm=llm, prompt=headline_prompt, verbose = True, output_key = "headline")
-press_chain = LLMChain(llm=llm, prompt=press_template, verbose = True, output_key = "press_release")
-twitter_chain = LLMChain(llm=llm, prompt=twitter_template, verbose = True, output_key = "twitter")
-facebook_chain = LLMChain(llm=llm, prompt=facebook_template, verbose = True, output_key = "facebook")
-instagram_chain = LLMChain(llm=llm, prompt=instagram_template, verbose = True, output_key = "instagram")
-
-#Runs the Generative AI model using LangChain using basic model and limited prompting
-llm2 = ChatOpenAI(temperature=0.5)
-headline_chain2 = LLMChain(llm=llm2, prompt=headline_prompt2, verbose = True, output_key = "headline2",)
-press_chain2 = LLMChain(llm=llm2, prompt=press_template2, verbose = True, output_key = "press_release2")
-twitter_chain2 = LLMChain(llm=llm2, prompt=twitter_template2, verbose = True, output_key = "twitter2")
-facebook_chain2 = LLMChain(llm=llm2, prompt=facebook_template2, verbose = True, output_key = "facebook2")
-instagram_chain2 = LLMChain(llm=llm2, prompt=instagram_template2, verbose = True, output_key = "instagram2")
-
 #Create function to generate fine-tuned content
 def generate_fine(prompt):
     st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
     #Returns response to prompt: What Political Issue Should I Write About?
+    #Runs the Generative AI model using LangChain using fine-tuned data and few shot prompting
+    llm = ChatOpenAI(temperature=0.5, model = "ft:gpt-3.5-turbo-0613:personal::84XCwFjs")
+    headline_chain = LLMChain(llm=llm, prompt=headline_prompt, verbose = True, output_key = "headline")
+    press_chain = LLMChain(llm=llm, prompt=press_template, verbose = True, output_key = "press_release")
+    twitter_chain = LLMChain(llm=llm, prompt=twitter_template, verbose = True, output_key = "twitter")
+    facebook_chain = LLMChain(llm=llm, prompt=facebook_template, verbose = True, output_key = "facebook")
+    instagram_chain = LLMChain(llm=llm, prompt=instagram_template, verbose = True, output_key = "instagram")
+
     #Creates wikipedia and google search instances
     search = GoogleSearchAPIWrapper()
     tool = Tool(
@@ -194,7 +185,6 @@ def generate_fine(prompt):
     func=search.run,
     )
     wiki = WikipediaAPIWrapper()
-    headline = headline_chain.run(prompt)
     wiki_research = wiki.run(prompt)
     google_research = tool.run(prompt)
 
@@ -217,6 +207,14 @@ def generate_fine(prompt):
 def generate_default(prompt):
   st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
   #Returns response to prompt: What Political Issue Should I Write About?
+  #Runs the Generative AI model using LangChain using basic model and limited prompting
+  llm2 = ChatOpenAI(temperature=0.5)
+  headline_chain2 = LLMChain(llm=llm2, prompt=headline_prompt2, verbose = True, output_key = "headline2",)
+  press_chain2 = LLMChain(llm=llm2, prompt=press_template2, verbose = True, output_key = "press_release2")
+  twitter_chain2 = LLMChain(llm=llm2, prompt=twitter_template2, verbose = True, output_key = "twitter2")
+  facebook_chain2 = LLMChain(llm=llm2, prompt=facebook_template2, verbose = True, output_key = "facebook2")
+  instagram_chain2 = LLMChain(llm=llm2, prompt=instagram_template2, verbose = True, output_key = "instagram2")
+
   #Feeds prompts into OpenAI LLM chains
   headline2 = headline_chain2.run(prompt)
   press_release2 = press_chain2.run(headline2=headline2)
