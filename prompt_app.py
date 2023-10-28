@@ -191,12 +191,37 @@ st.header('The Next Generation of Political Tech')
 st.write('Learn more about Political Banter in the side bar!')
 prompt = st.text_input('What Political Issue Should I Write About?')
 
-#Creates session state
-if 'fine_id' not in st.session_state:
-  st.session_state.fine_id = None
+#Creates session state for fine-tuned
+if 'headline' not in st.session_state:
+  st.session_state.headline_id = None
 
-if 'default_id' not in st.session_state:
-  st.session_state.default_id = None
+if 'press' not in st.session_state:
+  st.session_state.press_id = None
+
+if 'twitter' not in st.session_state:
+  st.session_state.twitter_id = None
+
+if 'facebook' not in st.session_state:
+  st.session_state.facebook_id = None
+
+if 'instagram' not in st.session_state:
+  st.session_state.instagram_id = None
+
+#Creates session state for baseline
+if 'headline2' not in st.session_state:
+  st.session_state.headline2_id = None
+
+if 'press2' not in st.session_state:
+  st.session_state.press2_id = None
+
+if 'twitter2' not in st.session_state:
+  st.session_state.twitter2_id = None
+
+if 'facebook2' not in st.session_state:
+  st.session_state.facebook2_id = None
+
+if 'instagram2' not in st.session_state:
+  st.session_state.instagram2_id = None
 
 #Creates sidebar
 with st.sidebar:
@@ -212,18 +237,16 @@ model = st.radio(
   captions = ["Includes Fine-Tuned OpenAI Model and Few Shot Prompts","Uses Default OpenAI Model and Basic Prompts"]
 )
 
-#Creates button for generating content
-button = st.button("Generate Content", type='primary')
-
 #Creates tabs to separate app features
 tab1, tab2, tab3 = st.tabs(['Political Banter','Baseline','Data'])
 
 #Selects which model to run
 if model == "Fine-Tuned OpenAI Model":
+  #Creates button for generating content
+  button = st.button("Generate Content", type='primary',on_click=prompt)
   #Runs button to generate content
   if button:
     if prompt:
-      st.session_state.fine_id = fine_id
       #Returns response to prompt: What Political Issue Should I Write About?
       #Creates wikipedia and google search instances
       search = GoogleSearchAPIWrapper()
@@ -244,6 +267,13 @@ if model == "Fine-Tuned OpenAI Model":
       twitter = twitter_chain.run(press_release=press_release,headline=headline)
       facebook = facebook_chain.run(twitter=twitter,headline=headline)
       instagram = instagram_chain.run(facebook=facebook,headline=headline)
+
+      #Uses session state to store variables
+      st.session_state.headline_id = headline
+      st.session_state.press_id = press_release
+      st.session_state.twitter_id = twitter
+      st.session_state.facebook_id = facebook
+      st.session_state.instagram_id = instagram
 
       #Adds returned results to tab 1 and uses expanders to separate topics
       with tab1:
@@ -272,11 +302,12 @@ if model == "Fine-Tuned OpenAI Model":
             st.info(wiki_research)
 
 #Selects which model to run
-elif model == "Fine-Tuned OpenAI Model":
+elif model == "Default OpenAI Model":
+  #Creates button for generating content
+  button = st.button("Generate Content", type='primary',on_click=prompt)
   #Runs button to generate content
   if button:
     if prompt:
-      st.session_state.default_id = default_id
       #Returns response to prompt: What Political Issue Should I Write About?
       #Feeds prompts into OpenAI LLM chains
       headline2 = headline_chain2.run(prompt)
@@ -285,6 +316,12 @@ elif model == "Fine-Tuned OpenAI Model":
       facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
       instagram2 = instagram_chain2.run(facebook2=facebook2,headline2=headline2)
 
+      #Uses session state to store variables
+      st.session_state.headline2_id = headline2
+      st.session_state.press2_id = press_release2
+      st.session_state.twitter2_id = twitter2
+      st.session_state.facebook2_id = facebook2
+      st.session_state.instagram2_id = instagram2
       #Adds returned results to tab 1 and uses expanders to separate topics
       with tab2:
         st.write("Headline: " + headline2)
