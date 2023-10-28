@@ -112,7 +112,7 @@ def generate_default(prompt):
   #Returns response to prompt: What Political Issue Should I Write About?
   #Runs the Generative AI model using LangChain using basic model and limited prompting
   from Baseline import headline_prompt2, press_template2, twitter_template2, facebook_template2, instagram_template2
-  llm2 = ChatOpenAI(temperature=0.5)
+  llm2 = ChatOpenAI(temperature=0.5, model='gpt-3.5-turbo')
   headline_chain2 = LLMChain(llm=llm2, prompt=headline_prompt2, verbose = True, output_key = "headline2",)
   press_chain2 = LLMChain(llm=llm2, prompt=press_template2, verbose = True, output_key = "press_release2")
   twitter_chain2 = LLMChain(llm=llm2, prompt=twitter_template2, verbose = True, output_key = "twitter2")
