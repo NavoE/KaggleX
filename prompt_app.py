@@ -207,11 +207,12 @@ model = st.radio(
   ["Fine-Tuned OpenAI Model","Default OpenAI Model"],
   captions = ["Includes Fine-Tuned OpenAI Model and Few Shot Prompts","Uses Default OpenAI Model and Basic Prompts"]
 )
+#Creates button for generating content
+button = st.button("Generate Content", type='primary')
 
 #Selects which model to run
 if model == "Fine-Tuned OpenAI Model":
   #Runs button to generate content
-  button = st.button("Generate Content", type='primary',key='button1')
   if button:
     if prompt:
       #Returns response to prompt: What Political Issue Should I Write About?
@@ -268,7 +269,6 @@ if model == "Fine-Tuned OpenAI Model":
 #Selects which model to run
 if model == "Fine-Tuned OpenAI Model":
   #Runs button to generate content
-  button = st.button("Generate Content", type='primary',key='button2')
   if button:
     if prompt:
       #Returns response to prompt: What Political Issue Should I Write About?
