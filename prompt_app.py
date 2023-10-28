@@ -226,7 +226,7 @@ if model == "Fine-Tuned OpenAI Model":
     #Creates button for generating content
     st.session_state.finetuned = st.button(
     "Generate Content", 
-    type='primary'
+    type='primary',
     key='fine', 
     value=st.session_state.finetuned,
     on_click=set_finetuned
@@ -284,7 +284,7 @@ elif model == "Fine-Tuned OpenAI Model":
       #Creates button for generating content
       st.session_state.finetuned = st.button(
       "Generate Content", 
-      type='primary'
+      type='primary',
       key='fine', 
       value=st.session_state.finetuned,
       on_click=set_finetuned
