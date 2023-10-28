@@ -285,7 +285,7 @@ with tab1:
     #Creates button for generating content
     finebutton = st.button("Generate Fine-Tuned Content", type='primary')
     #Runs button to generate content
-    if finebutton:
+    while finebutton:
       if prompt:
           headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
           #Uses session state to store variables
@@ -327,7 +327,7 @@ with tab2:
     #Creates button for generating content
     defbutton = st.button("Generate Default Content", type='primary')
     #Runs button to generate content
-    if defbutton:
+    while defbutton:
       if prompt:
         headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
         #Uses session state to store variables
