@@ -155,6 +155,12 @@ st.header('The Next Generation of Political Tech')
 st.write('Learn more about how Political Banter was developed in the side bar!')
 prompt = st.text_input('What Political Issue Should I Write About?')
 
+#Creates button for generating content
+button = st.button("Generate Content", type='primary')
+
+#Creates tabs to separate app features
+tab1, tab2 = st.tabs(['Political Banter','Data'])
+
 with st.sidebar:
   st.title('About Political Banter')
   st.header('Using this tool is as simple as telling Political Banter what political issues you want it to write about.')
@@ -162,7 +168,9 @@ with st.sidebar:
   st.write('Learn more about the Kaggle dataset that was used to inform the tone and voice used by Political Banter via the following link: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download')
 #Returns response to prompt: What Political Issue Should I Write About?
 #Uses expanders and tabs to separate topics and data
-if prompt:
+
+if button:
+  if prompt:
     search = GoogleSearchAPIWrapper()
     tool = Tool(
     name="Google Search",
@@ -178,7 +186,6 @@ if prompt:
     facebook = facebook_chain.run(twitter=twitter,headline=headline,wikipedia_research=wiki_research,google=google_research)
     instagram = instagram_chain.run(facebook=facebook,wikipedia_research=wiki_research,google=google_research)
     st.write("Headline: " + headline)
-    tab1, tab2 = st.tabs(['Enhanced', 'Baseline'])
 
     with tab1:
       # with st.expander("Headline History"):
@@ -206,6 +213,6 @@ if prompt:
       st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
       st.write(data)
     
-    with tab2:
-       st.write("Hello")
+with tab2:
+  st.write("Hello")
        
