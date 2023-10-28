@@ -233,13 +233,13 @@ with tab1:
     #Runs button to generate content
     if finebutton:
       if prompt:
-          headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
-          finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
-          if model == 'Default OpenAI Model':
-            st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
-            finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
-  else:
-      st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
+        headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
+        store_finetuning = finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
+  store_finetuning
+  
+  if model == "Default OpenAI Model":
+    st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
+    store_finetuning
 
 #Selects which model to run and generate on tab 2
 with tab2:
@@ -250,13 +250,12 @@ with tab2:
     if defbutton:
       if prompt:
         headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
-        defstate(headline2, press_release2, twitter2, facebook2, instagram2)
-        if model == "Fine-Tuned OpenAI Model":
-          st.write("Please select the Default OpenAI Model setting to generate new content")
-          defstate(headline2, press_release2, twitter2, facebook2, instagram2)
-  else:
+        store_default = defstate(headline2, press_release2, twitter2, facebook2, instagram2)
+  store_default
+
+  if model == "Fine-Tuned OpenAI Model":
     st.write("Please select the Default OpenAI Model setting to generate new content")
-    
+    store_default
 
 #Adds data table to tab 2
 with tab3: 
