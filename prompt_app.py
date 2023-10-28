@@ -216,14 +216,14 @@ model = st.radio(
 button = st.button("Generate Content", type='primary')
 
 #Creates tabs to separate app features
-tab1, tab2 = st.tabs(['Political Banter','Data'])
+tab1, tab2, tab3 = st.tabs(['Political Banter','Baseline','Data'])
 
 #Selects which model to run
 if model == "Fine-Tuned OpenAI Model":
   #Runs button to generate content
   if button:
     if prompt:
-      st.session_state.fine_id = fine.id
+      st.session_state.fine_id = fine_id
       #Returns response to prompt: What Political Issue Should I Write About?
       #Creates wikipedia and google search instances
       search = GoogleSearchAPIWrapper()
@@ -276,7 +276,7 @@ elif model == "Fine-Tuned OpenAI Model":
   #Runs button to generate content
   if button:
     if prompt:
-      st.session_state.default_id = default.id
+      st.session_state.default_id = default_id
       #Returns response to prompt: What Political Issue Should I Write About?
       #Feeds prompts into OpenAI LLM chains
       headline2 = headline_chain2.run(prompt)
@@ -286,7 +286,7 @@ elif model == "Fine-Tuned OpenAI Model":
       instagram2 = instagram_chain2.run(facebook2=facebook2,headline2=headline2)
 
       #Adds returned results to tab 1 and uses expanders to separate topics
-      with tab1:
+      with tab2:
         st.write("Headline: " + headline2)
         # with st.expander("Headline History"):
         #   st.info(headline_memory.buffer)
@@ -308,6 +308,6 @@ elif model == "Fine-Tuned OpenAI Model":
         #     st.info(instagram_memory.buffer)
 
 #Adds data table to tab 2
-with tab2: 
+with tab3: 
   st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
   st.write(data)
