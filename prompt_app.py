@@ -280,12 +280,11 @@ tab1, tab2, tab3 = st.tabs(['Political Banter','Default','Data'])
 
 #Selects which model to run and generate on tab 1
 with tab1:
-  st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
+  #Creates button for generating content
+  finebutton = st.button("Generate Fine-Tuned Content", type='primary')
   if model == "Fine-Tuned OpenAI Model":
-    #Creates button for generating content
-    finebutton = st.button("Generate Fine-Tuned Content", type='primary')
     #Runs button to generate content
-    while finebutton:
+    if finebutton:
       if prompt:
           headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
           #Uses session state to store variables
@@ -319,15 +318,16 @@ with tab1:
               st.info(google_research)
           with st.expander("Wikipedia Research"):
               st.info(wiki_research)
+  else:
+      st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
 
 #Selects which model to run and generate on tab 2
 with tab2:
-  st.write("Please select the Default OpenAI Model setting to generate new content")
+  #Creates button for generating content
+  defbutton = st.button("Generate Default Content", type='primary')
   if model == "Default OpenAI Model":
-    #Creates button for generating content
-    defbutton = st.button("Generate Default Content", type='primary')
     #Runs button to generate content
-    while defbutton:
+    if defbutton:
       if prompt:
         headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
         #Uses session state to store variables
@@ -357,6 +357,9 @@ with tab2:
             st.write(instagram2)
           # with st.expander("Instagram Post History"):
           #     st.info(instagram_memory.buffer)
+  else:
+    st.write("Please select the Default OpenAI Model setting to generate new content")
+    
 
 #Adds data table to tab 2
 with tab3: 
