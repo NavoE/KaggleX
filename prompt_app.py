@@ -240,7 +240,6 @@ with tab1:
 
   if model == "Default OpenAI Model":
     st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
-    store_finetuning
 
 #Selects which model to run and generate on tab 2
 store_default = None
@@ -257,7 +256,6 @@ with tab2:
 
   if model == "Fine-Tuned OpenAI Model":
     st.write("Please select the Default OpenAI Model setting to generate new content")
-    store_default
 
 #Adds data table to tab 2
 with tab3: 
