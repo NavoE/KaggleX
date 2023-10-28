@@ -97,13 +97,6 @@ def generate_fine(prompt):
     twitter = twitter_chain.run(press_release=press_release,headline=headline)
     facebook = facebook_chain.run(twitter=twitter,headline=headline)
     instagram = instagram_chain.run(facebook=facebook,headline=headline)
-
-    #Uses session state to store variables
-    st.session_state.headline_id = headline
-    st.session_state.press_id = press_release
-    st.session_state.twitter_id = twitter
-    st.session_state.facebook_id = facebook
-    st.session_state.instagram_id = instagram
     return headline, press_release, twitter, facebook, instagram, google_research, wiki_research
 
 #Create function to generate default content
@@ -174,21 +167,29 @@ with tab1:
     if finebutton:
       if prompt:
           headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
+          
+          #Uses session state to store variables
+          st.session_state.headline_id = headline
+          st.session_state.press_id = press_release
+          st.session_state.twitter_id = twitter
+          st.session_state.facebook_id = facebook
+          st.session_state.instagram_id = instagram
+          
           #Adds returned results to tab 1 and uses expanders to separate topics
           with st.expander("Press Release"):
-            st.write(press_release)
+            st.write(st.session_state.press_id)
           # with st.expander("Press Release History"):
           #     st.info(press_memory.buffer)
           with st.expander("Tweet"):
-            st.write(twitter)
+            st.write(st.session_state.twitter_id)
           # with st.expander("Tweet History"):
           #     st.info(twitter_memory.buffer)
           with st.expander("Facebook Post"):
-            st.write(facebook)
+            st.write(st.session_state.facebook_id)
           # with st.expander("Facebook Post History"):
           #     st.info(facebook_memory.buffer)
           with st.expander("Instagram Post"):
-            st.write(instagram)
+            st.write(st.session_state.instagram_id)
           # with st.expander("Instagram Post History"):
           #     st.info(instagram_memory.buffer)
           with st.expander("Google Research"):
