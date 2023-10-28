@@ -318,7 +318,8 @@ with tab1:
               st.info(google_research)
           with st.expander("Wikipedia Research"):
               st.info(wiki_research)
-
+  else:
+      st.write("Please select the Fine-Tuned OpenAI Model setting")
 #Selects which model to run and generate on tab 2
 with tab2:
 #Creates button for generating content
@@ -355,6 +356,8 @@ with tab2:
             st.write(instagram2)
           # with st.expander("Instagram Post History"):
           #     st.info(instagram_memory.buffer)
+  else:
+    st.write("Please select the Default OpenAI Model setting")
 
 #Adds data table to tab 2
 with tab3: 
