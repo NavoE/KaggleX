@@ -275,6 +275,8 @@ model = st.radio(
   captions = ["Includes Fine-Tuned OpenAI Model and Few Shot Prompts","Uses Default OpenAI Model and Basic Prompts"]
 )
 
+st.write('Please do not change the settings until after the content is generated. Otherwise, your content will not be generated')
+
 #Creates tabs to separate app features
 tab1, tab2, tab3 = st.tabs(['Political Banter','Default','Data'])
 
@@ -283,84 +285,85 @@ with tab1:
   if model == "Fine-Tuned OpenAI Model":
     #Creates button for generating content
     finebutton = st.button("Generate Fine-Tuned Content", type='primary')
+    #Runs button to generate content
+    if finebutton:
+      if prompt:
+          headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
+          #Uses session state to store variables
+          st.session_state.headline_id = headline
+          st.session_state.press_id = press_release
+          st.session_state.twitter_id = twitter
+          st.session_state.facebook_id = facebook
+          st.session_state.instagram_id = instagram
+
+          #Adds returned results to tab 1 and uses expanders to separate topics
+          st.write("Headline: " + headline)
+          # with st.expander("Headline History"):
+          #   st.info(headline_memory.buffer)
+          with st.expander("Press Release"):
+            st.write(press_release)
+          # with st.expander("Press Release History"):
+          #     st.info(press_memory.buffer)
+          with st.expander("Tweet"):
+            st.write(twitter)
+          # with st.expander("Tweet History"):
+          #     st.info(twitter_memory.buffer)
+          with st.expander("Facebook Post"):
+            st.write(facebook)
+          # with st.expander("Facebook Post History"):
+          #     st.info(facebook_memory.buffer)
+          with st.expander("Instagram Post"):
+            st.write(instagram)
+          # with st.expander("Instagram Post History"):
+          #     st.info(instagram_memory.buffer)
+          with st.expander("Google Research"):
+              st.info(google_research)
+          with st.expander("Wikipedia Research"):
+              st.info(wiki_research)
   else:
       st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
-  #Runs button to generate content
-  if finebutton:
-    if prompt:
-        headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
-        #Uses session state to store variables
-        st.session_state.headline_id = headline
-        st.session_state.press_id = press_release
-        st.session_state.twitter_id = twitter
-        st.session_state.facebook_id = facebook
-        st.session_state.instagram_id = instagram
-
-        #Adds returned results to tab 1 and uses expanders to separate topics
-        st.write("Headline: " + headline)
-        # with st.expander("Headline History"):
-        #   st.info(headline_memory.buffer)
-        with st.expander("Press Release"):
-          st.write(press_release)
-        # with st.expander("Press Release History"):
-        #     st.info(press_memory.buffer)
-        with st.expander("Tweet"):
-          st.write(twitter)
-        # with st.expander("Tweet History"):
-        #     st.info(twitter_memory.buffer)
-        with st.expander("Facebook Post"):
-          st.write(facebook)
-        # with st.expander("Facebook Post History"):
-        #     st.info(facebook_memory.buffer)
-        with st.expander("Instagram Post"):
-          st.write(instagram)
-        # with st.expander("Instagram Post History"):
-        #     st.info(instagram_memory.buffer)
-        with st.expander("Google Research"):
-            st.info(google_research)
-        with st.expander("Wikipedia Research"):
-            st.info(wiki_research)
 
 #Selects which model to run and generate on tab 2
 with tab2:
   if model == "Default OpenAI Model":
     #Creates button for generating content
     defbutton = st.button("Generate Default Content", type='primary')
+    #Runs button to generate content
+    if defbutton:
+      if prompt:
+        headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
+        #Uses session state to store variables
+        st.session_state.headline2_id = headline2
+        st.session_state.press2_id = press_release2
+        st.session_state.twitter2_id = twitter2
+        st.session_state.facebook2_id = facebook2
+        st.session_state.instagram2_id = instagram2
+        #Adds returned results to tab 1 and uses expanders to separate topics
+        with tab2:
+          st.write("Headline: " + headline2)
+          # with st.expander("Headline History"):
+          #   st.info(headline_memory.buffer)
+          with st.expander("Press Release"):
+            st.write(press_release2)
+          # with st.expander("Press Release History"):
+          #     st.info(press_memory.buffer)
+          with st.expander("Tweet"):
+            st.write(twitter2)
+          # with st.expander("Tweet History"):
+          #     st.info(twitter_memory.buffer)
+          with st.expander("Facebook Post"):
+            st.write(facebook2)
+          # with st.expander("Facebook Post History"):
+          #     st.info(facebook_memory.buffer)
+          with st.expander("Instagram Post"):
+            st.write(instagram2)
+          # with st.expander("Instagram Post History"):
+          #     st.info(instagram_memory.buffer)
   else:
     st.write("Please select the Default OpenAI Model setting to generate new content")
-  #Runs button to generate content
-  if defbutton:
-    if prompt:
-      headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
-      #Uses session state to store variables
-      st.session_state.headline2_id = headline2
-      st.session_state.press2_id = press_release2
-      st.session_state.twitter2_id = twitter2
-      st.session_state.facebook2_id = facebook2
-      st.session_state.instagram2_id = instagram2
-      #Adds returned results to tab 1 and uses expanders to separate topics
-      with tab2:
-        st.write("Headline: " + headline2)
-        # with st.expander("Headline History"):
-        #   st.info(headline_memory.buffer)
-        with st.expander("Press Release"):
-          st.write(press_release2)
-        # with st.expander("Press Release History"):
-        #     st.info(press_memory.buffer)
-        with st.expander("Tweet"):
-          st.write(twitter2)
-        # with st.expander("Tweet History"):
-        #     st.info(twitter_memory.buffer)
-        with st.expander("Facebook Post"):
-          st.write(facebook2)
-        # with st.expander("Facebook Post History"):
-        #     st.info(facebook_memory.buffer)
-        with st.expander("Instagram Post"):
-          st.write(instagram2)
-        # with st.expander("Instagram Post History"):
-        #     st.info(instagram_memory.buffer)
     
-#Adds data table to tab 3
+
+#Adds data table to tab 2
 with tab3: 
   st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
   st.write(data)
