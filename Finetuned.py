@@ -97,10 +97,10 @@ twitter_template = PromptTemplate(
 
 facebook_template = PromptTemplate(
     input_variables = ["twitter"],
-    template = 'write me a facebook post based on this twitter post tweeted by a politician: {twitter}'
+    template = 'write me a facebook post based on this twitter post tweeted by a politician: {twitter}. Do not use emojis excessively.'
 )
 
 instagram_template = PromptTemplate(
     input_variables = ["facebook"],
-    template = 'write me an instagram post based on this facebook post written by a politician: {facebook}'
+    template = 'write me an instagram post based on this facebook post written by a politician: {facebook}. Do not use emojis excessively.'
 )
