@@ -225,12 +225,19 @@ facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
 instagram2 = instagram_chain2.run(facebook2=facebook2,headline2=headline2)
 
 #Creates tabs to separate app features
-tab1, tab2, tab3 = st.tabs(['Enhanced','Baseline','Data'])
+tab1, tab2 = st.tabs(['Political Banter','Data'])
 
-#Runs button to generate content
-if st.button("Generate Content", type="primary"):
-  #Adds returned results to tab 1 and uses expanders to separate topics
-  with tab1:
+#Creates radio button widget 
+model = st.radio(
+  "Which GenAI model would you like to use?",
+  ["Fine-Tuned OpenAI Model","Default OpenAI Model"],
+  captions = ["Includes Fine-Tuned OpenAI Model and Few Shot Prompts","Uses Default OpenAI Model and Basic Prompts"]
+)
+
+#Adds returned results to tab 1 and uses expanders to separate topics
+with tab1:
+   #Runs button to generate content
+  if model == "Fine-Tuned OpenAI Model":
     st.write("Headline: " + headline)
     # with st.expander("Headline History"):
     #   st.info(headline_memory.buffer)
@@ -255,34 +262,31 @@ if st.button("Generate Content", type="primary"):
     with st.expander("Wikipedia Research"):
         st.info(wiki_research)
 
-    #Feeds prompts into OpenAI LLM chains
-    #Adds returned results to tab 1 and uses expanders to separate topics
-    if tab2:
-      with tab2:
-        st.write("Headline: " + headline2)
-        # with st.expander("Headline History"):
-        #   st.info(headline_memory.buffer)
-        with st.expander("Press Release"):
-          st.write(press_release2)
-        # with st.expander("Press Release History"):
-        #     st.info(press_memory.buffer)
-        with st.expander("Tweet"):
-          st.write(twitter2)
-        # with st.expander("Tweet History"):
-        #     st.info(twitter_memory.buffer)
-        with st.expander("Facebook Post"):
-          st.write(facebook2)
-        # with st.expander("Facebook Post History"):
-        #     st.info(facebook_memory.buffer)
-        with st.expander("Instagram Post"):
-          st.write(instagram2)
-        # with st.expander("Instagram Post History"):
-        #     st.info(instagram_memory.buffer)
-        
-    if tab3:
-      with tab3: 
-        st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
-        st.write(data)
+  #Runs button to generate content
+  if model == "Default OpenAI Model":
+    st.write("Headline: " + headline2)
+    # with st.expander("Headline History"):
+    #   st.info(headline_memory.buffer)
+    with st.expander("Press Release"):
+      st.write(press_release2)
+    # with st.expander("Press Release History"):
+    #     st.info(press_memory.buffer)
+    with st.expander("Tweet"):
+      st.write(twitter2)
+    # with st.expander("Tweet History"):
+    #     st.info(twitter_memory.buffer)
+    with st.expander("Facebook Post"):
+      st.write(facebook2)
+    # with st.expander("Facebook Post History"):
+    #     st.info(facebook_memory.buffer)
+    with st.expander("Instagram Post"):
+      st.write(instagram2)
+    # with st.expander("Instagram Post History"):
+    #     st.info(instagram_memory.buffer)
+    
+with tab2: 
+  st.write("This data was ingested into the fine tuning GenerativeAI Model used to build the Political Banter App and can be found at: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download")
+  st.write(data)
 
 
             
