@@ -198,97 +198,76 @@ with st.sidebar:
   st.markdown('Political Banter was created by finetuning an OpenAI chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional promting was also used to guide the algorithm to craft catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
   st.write('Learn more about the Kaggle dataset that was used to inform the tone and voice of Political Banter via the following link: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download')
 
-# Store the initial value of widgets in session state
-if "finetuned" not in st.session_state:
-    st.session_state.finetuned = "Fine-Tuned OpenAI Model"
-    st.session_state.default = "Default OpenAI Model"
-
-def set_finetuned():
-  st.session_state.finetuned = st.session_state.set_fine
-def set_default():
-  st.session_state.default = st.session_state.set_def
-    
 #Creates radio button widget 
 model = st.radio(
   "Which GenAI model would you like to use?",
-  options = ["Fine-Tuned OpenAI Model","Default OpenAI Model"],
+  ["Fine-Tuned OpenAI Model","Default OpenAI Model"],
   captions = ["Includes Fine-Tuned OpenAI Model and Few Shot Prompts","Uses Default OpenAI Model and Basic Prompts"]
 )
 
-
+#Creates button for generating content
+button = st.button("Generate Content", type='primary')
 
 #Creates tabs to separate app features
 tab1, tab2 = st.tabs(['Political Banter','Data'])
 
 #Selects which model to run
 if model == "Fine-Tuned OpenAI Model":
-  if prompt:
-    # #Creates button for generating content
-    # st.session_state.finetuned = st.button(
-    # "Generate Content", 
-    # type='primary',
-    # key='fine', 
-    # value=st.session_state.finetuned,
-    # on_click=set_finetuned
-    # )
-    #Returns response to prompt: What Political Issue Should I Write About?
-    #Creates wikipedia and google search instances
-    search = GoogleSearchAPIWrapper()
-    tool = Tool(
-    name="Google Search",
-    description="Search Google for recent results.",
-    func=search.run,
-    )
-    wiki = WikipediaAPIWrapper()
-    headline = headline_chain.run(prompt)
-    headline2 = headline_chain2.run(prompt)
-    wiki_research = wiki.run(prompt)
-    google_research = tool.run(prompt)
+  #Runs button to generate content
+  if button:
+    if prompt:
+      #Returns response to prompt: What Political Issue Should I Write About?
+      #Creates wikipedia and google search instances
+      search = GoogleSearchAPIWrapper()
+      tool = Tool(
+      name="Google Search",
+      description="Search Google for recent results.",
+      func=search.run,
+      )
+      wiki = WikipediaAPIWrapper()
+      headline = headline_chain.run(prompt)
+      headline2 = headline_chain2.run(prompt)
+      wiki_research = wiki.run(prompt)
+      google_research = tool.run(prompt)
 
-    #Feeds prompts into OpenAI LLM chains
-    headline = headline_chain.run(prompt)
-    press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
-    twitter = twitter_chain.run(press_release=press_release,headline=headline)
-    facebook = facebook_chain.run(twitter=twitter,headline=headline)
-    instagram = instagram_chain.run(facebook=facebook,headline=headline)
+      #Feeds prompts into OpenAI LLM chains
+      headline = headline_chain.run(prompt)
+      press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
+      twitter = twitter_chain.run(press_release=press_release,headline=headline)
+      facebook = facebook_chain.run(twitter=twitter,headline=headline)
+      instagram = instagram_chain.run(facebook=facebook,headline=headline)
 
-    #Adds returned results to tab 1 and uses expanders to separate topics
-    with tab1:
-      st.write("Headline: " + headline)
-      # with st.expander("Headline History"):
-      #   st.info(headline_memory.buffer)
-      with st.expander("Press Release"):
-        st.write(press_release)
-      # with st.expander("Press Release History"):
-      #     st.info(press_memory.buffer)
-      with st.expander("Tweet"):
-        st.write(twitter)
-      # with st.expander("Tweet History"):
-      #     st.info(twitter_memory.buffer)
-      with st.expander("Facebook Post"):
-        st.write(facebook)
-      # with st.expander("Facebook Post History"):
-      #     st.info(facebook_memory.buffer)
-      with st.expander("Instagram Post"):
-        st.write(instagram)
-      # with st.expander("Instagram Post History"):
-      #     st.info(instagram_memory.buffer)
-      with st.expander("Google Research"):
-          st.info(google_research)
-      with st.expander("Wikipedia Research"):
-          st.info(wiki_research)
+      #Adds returned results to tab 1 and uses expanders to separate topics
+      with tab1:
+        st.write("Headline: " + headline)
+        # with st.expander("Headline History"):
+        #   st.info(headline_memory.buffer)
+        with st.expander("Press Release"):
+          st.write(press_release)
+        # with st.expander("Press Release History"):
+        #     st.info(press_memory.buffer)
+        with st.expander("Tweet"):
+          st.write(twitter)
+        # with st.expander("Tweet History"):
+        #     st.info(twitter_memory.buffer)
+        with st.expander("Facebook Post"):
+          st.write(facebook)
+        # with st.expander("Facebook Post History"):
+        #     st.info(facebook_memory.buffer)
+        with st.expander("Instagram Post"):
+          st.write(instagram)
+        # with st.expander("Instagram Post History"):
+        #     st.info(instagram_memory.buffer)
+        with st.expander("Google Research"):
+            st.info(google_research)
+        with st.expander("Wikipedia Research"):
+            st.info(wiki_research)
 
 #Selects which model to run
 elif model == "Fine-Tuned OpenAI Model":
+  #Runs button to generate content
+  if button:
     if prompt:
-      # #Creates button for generating content
-      # st.session_state.finetuned = st.button(
-      # "Generate Content", 
-      # type='primary',
-      # key='fine', 
-      # value=st.session_state.finetuned,
-      # on_click=set_finetuned
-      # )
       #Returns response to prompt: What Political Issue Should I Write About?
       #Feeds prompts into OpenAI LLM chains
       headline2 = headline_chain2.run(prompt)
