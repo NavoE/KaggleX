@@ -226,10 +226,10 @@ if model == "Fine-Tuned OpenAI Model":
   #Runs button to generate content
   if button:
     if prompt:
-      st.session_state.finetuned = prompt(
+      st.session_state.finetuned = button(
       key='fine', 
       value=st.session_state.finetuned,
-      on_change=set_finetuned
+      on_click=set_finetuned
       )
       #Returns response to prompt: What Political Issue Should I Write About?
       #Creates wikipedia and google search instances
@@ -283,10 +283,10 @@ elif model == "Fine-Tuned OpenAI Model":
   #Runs button to generate content
   if button:
     if prompt:
-      st.session_state.default = prompt(
-      key='def', 
-      value=st.session_state.default,
-      on_change=set_default
+      st.session_state.finetuned = button(
+      key='fine', 
+      value=st.session_state.finetuned,
+      on_click=set_finetuned
       )
       #Returns response to prompt: What Political Issue Should I Write About?
       #Feeds prompts into OpenAI LLM chains
