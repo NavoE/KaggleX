@@ -1,8 +1,7 @@
-# KaggleX
 ![Political Banter-logos_transparent](https://github.com/NavoE/KaggleX/assets/71500521/75780f0f-11c1-4372-aeba-9035f4d1c070)
 
+# KaggleX
 This repository is a compilation of my KaggleX project.
-
 
 - The goal of the project is to develop a tool that can generate political messaging that captures the tone and voice needed for producing quality and realistic content.
     - Objective 1: Analyze text data distributed by politicians
