@@ -170,7 +170,7 @@ def generate_default(prompt):
   #Feeds prompts into OpenAI LLM chains
   headline2 = headline_chain2.run(prompt)
   st.write("Headline: " + headline2)
-  st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
+  st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment. If I am taking longer than expected, that is because OpenAI is overloaded with requests, so I am re-running on your behalf.")
   press_release2 = press_chain2.run(headline2=headline2)
   twitter2 = twitter_chain2.run(press_release2=press_release2,headline2=headline2)
   facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
