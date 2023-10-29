@@ -8,7 +8,7 @@ headline_prompt2 = PromptTemplate(
 
 press_template2 = PromptTemplate(
     input_variables = ["headline2"],
-    template = 'I want you to act as a politician. Write me a press release based on this headline: {headline2}'
+    template = 'I want you to act as a politician. You will research and analyze cultural, economic, political, and social events in the past, collect data from primary sources and use it to develop a press release about what happened during various periods of history. My first suggestion request is: write me a press release based on this headline: {headline2}'
 )
 
 twitter_template2 = PromptTemplate(
