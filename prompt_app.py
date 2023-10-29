@@ -11,9 +11,9 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.tools import Tool
 from langchain.utilities import WikipediaAPIWrapper, GoogleSearchAPIWrapper
-from langchain.globals import set_llm_cache
-from langchain.cache import InMemoryCache
-set_llm_cache(InMemoryCache())
+# from langchain.globals import set_llm_cache
+# from langchain.cache import InMemoryCache
+# set_llm_cache(InMemoryCache())
 
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 os.environ['GOOGLE_CSE_ID'] = st.secrets['GOOGLE_CSE_ID']
