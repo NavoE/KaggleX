@@ -11,6 +11,9 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.tools import Tool
 from langchain.utilities import WikipediaAPIWrapper, GoogleSearchAPIWrapper
+from langchain.globals import set_llm_cache
+from langchain.cache import InMemoryCache
+set_llm_cache(InMemoryCache())
 
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 os.environ['GOOGLE_CSE_ID'] = st.secrets['GOOGLE_CSE_ID']
@@ -119,7 +122,6 @@ def defstate(headline2, press_release2, twitter2, facebook2, instagram2):
 #Create function to generate fine-tuned content
 @st.cache_data
 def generate_fine(prompt):
-    st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
     #Returns response to prompt: What Political Issue Should I Write About?
     #Runs the Generative AI model using fine-tuned model and few shot prompting
     from Finetuned import headline_prompt, press_template, twitter_template, facebook_template, instagram_template
@@ -155,7 +157,6 @@ def generate_fine(prompt):
 #Create function to generate default content
 @st.cache_data
 def generate_default(prompt):
-  st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
   #Returns response to prompt: What Political Issue Should I Write About?
   #Runs the Generative AI model using basic model and limited prompting
   from Baseline import headline_prompt2, press_template2, twitter_template2, facebook_template2, instagram_template2
@@ -214,6 +215,7 @@ with tab1:
     if finebutton:
       if prompt:
         headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
+        st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
         finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
   else:
       st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
@@ -227,6 +229,7 @@ with tab2:
     if defbutton:
       if prompt:
         headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
+        st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
         defstate(headline2, press_release2, twitter2, facebook2, instagram2)
   else:
     st.write("Please select the Default OpenAI Model setting to generate new content") 
