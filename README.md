@@ -1,4 +1,4 @@
-<img height="500" src="https://github.com/NavoE/KaggleX/assets/71500521/036df61c-da0a-4be0-8b1f-9e136889a53a.png")>
+![Political Banter-logos_transparent](https://github.com/NavoE/KaggleX/assets/71500521/f5cee79a-db98-43fa-976a-c89dd5f9ad5d)
 
 # KaggleX
 This repository is a compilation of my KaggleX project.
