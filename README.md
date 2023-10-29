@@ -42,5 +42,6 @@ This repository is a compilation of my KaggleX project, [Political Banter](https
 ## [Political Banter](https://navo-kagglex.streamlit.app/) App Development
 - Used OpenAI chatGPT Models, Langchain, and Streamlit for app development
 - App Preview
-![image](https://github.com/NavoE/KaggleX/assets/71500521/b12effd8-9275-47cf-b40a-04738e0653cb)
+![image](https://github.com/NavoE/KaggleX/assets/71500521/a8db35c5-6b95-45aa-88d3-33468b071d19)
+
 
