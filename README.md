@@ -36,11 +36,8 @@ Top Words
 
 Topic Modeling - Top 3 Topics of 20 Generated
 - Used scikit-learn CountVectorizer for tokenization and Latent Dirichlet Allocation (LDA) for  topic modeling.
-- Topic 1
 <img width="484" alt="KaggleX - Topic 1" src="https://github.com/NavoE/KaggleX/assets/71500521/dc9f29a4-1e20-48bb-9351-eeab905a4217">
-- Topic 2
 <img width="484" alt="KaggleX - Topic 2" src="https://github.com/NavoE/KaggleX/assets/71500521/7ac0331a-3c55-4b39-bdaf-ed3e1bcfc5e8">
-- Topic 3
 <img width="484" alt="KaggleX - Topic 3" src="https://github.com/NavoE/KaggleX/assets/71500521/66b32003-6121-47d5-b861-b5330da127a2">
 
 
