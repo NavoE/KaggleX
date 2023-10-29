@@ -1,11 +1,11 @@
 # KaggleX
-This repository is a compilation of my KaggleX project.
+This repository is a compilation of my KaggleX project, [Political Banter](https://navo-kagglex.streamlit.app/).
 
 - The goal of the project is to develop a tool that can generate political messaging that captures the tone and voice needed for producing quality and realistic content.
     - Objective 1: Analyze text data distributed by politicians
     - Objective 2: Generate fine-tuned messaging based on content produced by politicians
     - Objective 3: Guide messaging with few shot prompting
-    - Objective 4: [Build algorithm into app](https://navo-kagglex.streamlit.app/)
+    - Objective 4: Build algorithm into app
 
 - The system will generate text for the following use cases:
     - Headlines
@@ -30,11 +30,11 @@ This repository is a compilation of my KaggleX project.
 ## Exploratory Data Analysis of the political_social_medial File:
 
 ### Top Words
-- Used Spacy for lemmatization.
+- Used Spacy for lemmatization
 <img width="498" alt="KaggleX - Top Words" src="https://github.com/NavoE/KaggleX/assets/71500521/693f92de-b09d-4089-926d-f2f224c7bdf2">
 
 ### Topic Modeling - Top 3 Topics of 20 Generated
-- Used scikit-learn CountVectorizer for tokenization and Latent Dirichlet Allocation (LDA) for  topic modeling.
+- Used scikit-learn CountVectorizer for tokenization and Latent Dirichlet Allocation (LDA) for  topic modeling
 <img width="484" alt="KaggleX - Topic 1" src="https://github.com/NavoE/KaggleX/assets/71500521/dc9f29a4-1e20-48bb-9351-eeab905a4217">
 <img width="484" alt="KaggleX - Topic 2" src="https://github.com/NavoE/KaggleX/assets/71500521/7ac0331a-3c55-4b39-bdaf-ed3e1bcfc5e8">
 <img width="484" alt="KaggleX - Topic 3" src="https://github.com/NavoE/KaggleX/assets/71500521/66b32003-6121-47d5-b861-b5330da127a2">
