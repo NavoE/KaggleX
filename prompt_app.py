@@ -146,7 +146,7 @@ def generate_fine(prompt):
     #Feeds prompts into OpenAI LLM chains
     headline = headline_chain.run(prompt)
     st.write("Headline: " + headline)
-    st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
+    st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment (~30 seconds).")
     press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
     twitter = twitter_chain.run(press_release=press_release,headline=headline)
     facebook = facebook_chain.run(twitter=twitter,headline=headline)
@@ -170,7 +170,7 @@ def generate_default(prompt):
   #Feeds prompts into OpenAI LLM chains
   headline2 = headline_chain2.run(prompt)
   st.write("Headline: " + headline2)
-  st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment. If I am taking longer than expected, that is because OpenAI is overloaded with requests, so I am re-running on your behalf.")
+  st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment (~4 minutes). If I am taking longer than expected, that is because OpenAI is overloaded with requests, so I am re-running on your behalf.")
   press_release2 = press_chain2.run(headline2=headline2)
   twitter2 = twitter_chain2.run(press_release2=press_release2,headline2=headline2)
   facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
