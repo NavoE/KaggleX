@@ -117,6 +117,7 @@ def defstate(headline2, press_release2, twitter2, facebook2, instagram2):
   return st.session_state
   
 #Create function to generate fine-tuned content
+@st.cache_resource
 def generate_fine(prompt):
     st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
     #Returns response to prompt: What Political Issue Should I Write About?
