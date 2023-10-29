@@ -28,7 +28,7 @@ KaggleX File Descriptions:
 - The requirements file contains installation requirements used to run the app.
 
 
-Exploratory Data Analysis of the political_social_medial file:
+Exploratory Data Analysis of the political_social_medial File:
 
 Top Words
 - Used Spacy for lemmatization.
