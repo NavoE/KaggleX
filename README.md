@@ -1,4 +1,4 @@
-<img width="484" alt="Logo" src="https://github.com/NavoE/KaggleX/assets/71500521/dc9f29a4-1e20-48bb-9351-eeab905a4217">
+![Political Banter-logos_transparent](https://github.com/NavoE/KaggleX/assets/71500521/036df61c-da0a-4be0-8b1f-9e136889a53a)
 
 # KaggleX
 This repository is a compilation of my KaggleX project.
@@ -24,7 +24,7 @@ This repository is a compilation of my KaggleX project.
 - The Finetuned file contains few shot prompts and enhanced prompting templates. The Fined-Tuned OpenAI Model used is fine-tuned based on a database of tweets by politicians across the United States.
 - The ingest file is a tool used to input and format text-based data in preparation for fine-tuning. The output of the file results in a new fine-tuned model.
 - The Kaggle_Data notebook provides a walkthrough of the exploratory data analysis that was done on a Kaggle database of tweets posted by politicians across the United States. NLP was used to clean and analyze the data and identify top words and overarching topic themes across the tweets.
-- The political_social_media file is the dataset of political social media posts retrieved from Kaggle that was used to fine-tune the model:  https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download.
+- The political_social_media file is the dataset of political social media posts retrieved from Kaggle that was used to fine-tune the model: [Political Social Media Posts](https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download).
 - The prompt_app file creates an app called Political Banter, which generates catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.
 - The requirements file contains installation requirements used to run the app.
 
