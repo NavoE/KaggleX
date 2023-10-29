@@ -120,7 +120,7 @@ def defstate(headline2, press_release2, twitter2, facebook2, instagram2):
   return st.session_state
   
 #Create function to generate fine-tuned content
-@st.cache_data(show_spinner="Fetching data from OpenAI")
+@st.cache_resource(show_spinner="Fetching data from OpenAI")
 def generate_fine(prompt):
     #Returns response to prompt: What Political Issue Should I Write About?
     #Runs the Generative AI model using fine-tuned model and few shot prompting
@@ -155,7 +155,7 @@ def generate_fine(prompt):
     return headline, press_release, twitter, facebook, instagram, google_research, wiki_research
 
 #Create function to generate default content
-@st.cache_data(show_spinner="Fetching data from OpenAI")
+@st.cache_resource(show_spinner="Fetching data from OpenAI")
 def generate_default(prompt):
   #Returns response to prompt: What Political Issue Should I Write About?
   #Runs the Generative AI model using basic model and limited prompting
