@@ -192,14 +192,14 @@ with st.sidebar:
   st.title('About Political Banter')
   st.header('Using this tool is as simple as telling Political Banter what political issues you want it to write about.')
   st.markdown('Political Banter was created by finetuning an OpenAI chatGPT model based on a Kaggle database of Tweets by politicians from across the United States. Additional prompting was also used to guide the algorithm to craft catchy political content in the form of a headline, press release, tweet, facebook post, and instagram post.')
-  st.markdown('Political Banter uses caching, so your topic will be saved for future-reruns. To generate new content, either submit a new topic or click the Reset button below.')
+  st.markdown('Political Banter uses caching, so your topic will be saved for future-reruns. To generate new content, either submit a new topic or clear the chache using the button below.')
  
   def clear_cache():
     st.cache_resource.clear()
 
-  st.sidebar.button("Refresh Program",on_click=clear_cache)
+  st.sidebar.button("Refresh Program",on_click=clear_cache, type='primary')
 
-  st.write('Learn more about the Kaggle dataset that was used to inform the tone and voice of Political Banter via the following link: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download')
+  st.write('Learn more about the Kaggle dataset that was used to inform the tone and voice of Political Banter via the data tab and the following link: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download')
 
 #Creates radio button widget 
 model = st.radio(
