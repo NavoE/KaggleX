@@ -62,7 +62,6 @@ if 'facebook2' not in st.session_state:
 if 'instagram2' not in st.session_state:
   st.session_state.instagram2_id = None
 
-@st.cache
 def finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research):
   #Uses session state to store fine-tuned variables
   st.session_state.headline_id = headline
@@ -94,7 +93,6 @@ def finestate(headline, press_release, twitter, facebook, instagram, google_rese
 
   return st.session_state
 
-@st.cache
 def defstate(headline2, press_release2, twitter2, facebook2, instagram2):
   #Uses session state to store default variables
   st.session_state.headline2_id = headline2
