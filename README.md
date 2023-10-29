@@ -7,7 +7,7 @@ This repository is a compilation of my KaggleX project.
     - Objective 1: Analyze text data distributed by politicians
     - Objective 2: Generate fine-tuned messaging based on content produced by politicians
     - Objective 3: Guide messaging with few shot prompting
-    - Objective 4: Build algorithm into app
+    - Objective 4: [Build algorithm into app](Political Social Media Posts)
 
 - The system will generate text for the following use cases:
     - Headlines
