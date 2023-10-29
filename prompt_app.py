@@ -127,7 +127,6 @@ def generate_fine(prompt):
     from Finetuned import headline_prompt, press_template, twitter_template, facebook_template, instagram_template
     llm = ChatOpenAI(temperature=0.5, model = "ft:gpt-3.5-turbo-0613:personal::84XCwFjs")
     headline_chain = LLMChain(llm=llm, prompt=headline_prompt, verbose = True, output_key = "headline")
-    st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
     press_chain = LLMChain(llm=llm, prompt=press_template, verbose = True, output_key = "press_release")
     twitter_chain = LLMChain(llm=llm, prompt=twitter_template, verbose = True, output_key = "twitter")
     facebook_chain = LLMChain(llm=llm, prompt=facebook_template, verbose = True, output_key = "facebook")
@@ -171,7 +170,7 @@ def generate_default(prompt):
   #Feeds prompts into OpenAI LLM chains
   headline2 = headline_chain2.run(prompt)
   st.write("Headline: " + headline2)
- 
+  st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
   press_release2 = press_chain2.run(headline2=headline2)
   twitter2 = twitter_chain2.run(press_release2=press_release2,headline2=headline2)
   facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
