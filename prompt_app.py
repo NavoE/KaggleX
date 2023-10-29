@@ -120,13 +120,14 @@ def defstate(headline2, press_release2, twitter2, facebook2, instagram2):
   return st.session_state
   
 #Create function to generate fine-tuned content
-@st.cache_data
+@st.cache_data(show_spinner="Fetching data from OpenAI")
 def generate_fine(prompt):
     #Returns response to prompt: What Political Issue Should I Write About?
     #Runs the Generative AI model using fine-tuned model and few shot prompting
     from Finetuned import headline_prompt, press_template, twitter_template, facebook_template, instagram_template
     llm = ChatOpenAI(temperature=0.5, model = "ft:gpt-3.5-turbo-0613:personal::84XCwFjs")
     headline_chain = LLMChain(llm=llm, prompt=headline_prompt, verbose = True, output_key = "headline")
+    st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
     press_chain = LLMChain(llm=llm, prompt=press_template, verbose = True, output_key = "press_release")
     twitter_chain = LLMChain(llm=llm, prompt=twitter_template, verbose = True, output_key = "twitter")
     facebook_chain = LLMChain(llm=llm, prompt=facebook_template, verbose = True, output_key = "facebook")
@@ -146,7 +147,7 @@ def generate_fine(prompt):
     #Feeds prompts into OpenAI LLM chains
     headline = headline_chain.run(prompt)
     st.write("Headline: " + headline)
-
+    st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
     press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
     twitter = twitter_chain.run(press_release=press_release,headline=headline)
     facebook = facebook_chain.run(twitter=twitter,headline=headline)
@@ -155,7 +156,7 @@ def generate_fine(prompt):
     return headline, press_release, twitter, facebook, instagram, google_research, wiki_research
 
 #Create function to generate default content
-@st.cache_data
+@st.cache_data(show_spinner="Fetching data from OpenAI")
 def generate_default(prompt):
   #Returns response to prompt: What Political Issue Should I Write About?
   #Runs the Generative AI model using basic model and limited prompting
@@ -215,7 +216,6 @@ with tab1:
     if finebutton:
       if prompt:
         headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
-        st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
         finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
   else:
       st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
@@ -229,7 +229,6 @@ with tab2:
     if defbutton:
       if prompt:
         headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
-        st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment.")
         defstate(headline2, press_release2, twitter2, facebook2, instagram2)
   else:
     st.write("Please select the Default OpenAI Model setting to generate new content") 
