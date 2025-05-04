@@ -7,6 +7,7 @@ sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import sqlite3
 import pandas as pd
 import streamlit as st
+import langchain_community
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.tools import Tool
