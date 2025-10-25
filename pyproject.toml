@@ -1,5 +1,7 @@
 [project]
-# ...
+name = "kagglex"
+version = "0.1.0"
+requires-python = ">=3.11,<3.12"
 dependencies = [
   "streamlit>=1.45,<2",
   "langchain>=0.1,<1.0",
@@ -14,6 +16,11 @@ dependencies = [
   "google-api-python-client>=2.120,<3"
 ]
 
-
 [tool.uv]
+
+#run this if editing above
+#python -m uv sync
+#git add pyproject.toml uv.lock
+#git commit -m "Fix pyproject: add langchain (remove leading !)"
+#git push
 
