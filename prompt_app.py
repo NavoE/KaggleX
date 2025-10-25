@@ -1,21 +1,23 @@
 import os
+import platform
 
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# Use the stdlib sqlite3 everywhere (no monkey-patching)
+import sqlite3  # noqa: F401
 
-import sqlite3
 import pandas as pd
 import streamlit as st
-import langchain_community
-from langchain.chat_models import ChatOpenAI
+
+# ✅ New LangChain import locations
+from langchain_openai import ChatOpenAI
 from langchain.chains import LLMChain
-from langchain.tools import Tool
-from langchain.utilities import WikipediaAPIWrapper, GoogleSearchAPIWrapper
+from langchain_core.tools import Tool
+from langchain_community.utilities import WikipediaAPIWrapper, GoogleSearchAPIWrapper
 from langchain.globals import set_llm_cache
 from langchain.cache import InMemoryCache
+
 set_llm_cache(InMemoryCache())
 
+# Secrets
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 os.environ['GOOGLE_CSE_ID'] = st.secrets['GOOGLE_CSE_ID']
 os.environ['GOOGLE_API_KEY'] = st.secrets['GOOGLE_API_KEY']
