@@ -26,6 +26,43 @@ os.environ['GOOGLE_API_KEY'] = st.secrets['GOOGLE_API_KEY']
 #Retrieve Data
 data = pd.read_csv('political_social_media.csv', encoding_errors= "ignore")
 
+# --- LLMChain compatibility shim for LangChain >= 1.0 ---
+try:
+    # Works on older LangChain (<1.0)
+    from langchain.chains import LLMChain  # type: ignore
+except Exception:
+    # Provide a drop-in replacement using the Runnable API
+    from dataclasses import dataclass
+    from typing import Any
+    from langchain_core.output_parsers import StrOutputParser
+
+    @dataclass
+    class _CompatLLMChain:
+        llm: Any
+        prompt: Any
+        verbose: bool = False
+        output_key: str | None = None
+
+        def __post_init__(self):
+            # prompt | llm | parser
+            self._chain = self.prompt | self.llm | StrOutputParser()
+
+        def run(self, *args, **kwargs):
+            # Support both: .run("text") and .run(var=value, ...)
+            if kwargs:
+                return self._chain.invoke(kwargs)
+            if len(args) == 1:
+                # Use the first input variable name (defaults to "input")
+                ivars = getattr(self.prompt, "input_variables", None) or ["input"]
+                return self._chain.invoke({ivars[0]: args[0]})
+            raise ValueError("Provide either a single text argument or keyword arguments matching the prompt variables.")
+
+    # Alias to look like the classic class
+    LLMChain = _CompatLLMChain
+# --- end shim ---
+
+
+
 #LangChain Crash Course: Build a AutoGPT app in 25 minutes!: https://www.youtube.com/watch?v=MlK6SIjcjE8
 #Use to run Streamlit: python -m streamlit run prompt_app.py
 #Finetuning for Tone: https://blog.langchain.dev/chat-loaders-finetune-a-chatmodel-in-your-voice/
