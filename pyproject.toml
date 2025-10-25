@@ -19,8 +19,8 @@ dependencies = [
 [tool.uv]
 
 #run this if editing above
-python -m uv sync
-git add pyproject.toml uv.lock
-git commit -m "Fix pyproject: add langchain (remove leading !)"
-git push
+#python -m uv sync
+#git add pyproject.toml uv.lock
+#git commit -m "Fix pyproject: add langchain (remove leading !)"
+#git push
 
