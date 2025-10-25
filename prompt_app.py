@@ -1,8 +1,4 @@
 import os
-import platform
-
-# Use the stdlib sqlite3 everywhere (no monkey-patching)
-import sqlite3  # noqa: F401
 
 import pandas as pd
 import streamlit as st
@@ -26,12 +22,12 @@ os.environ['GOOGLE_API_KEY'] = st.secrets['GOOGLE_API_KEY']
 #Retrieve Data
 data = pd.read_csv('political_social_media.csv', encoding_errors= "ignore")
 
+
 # --- LLMChain compatibility shim for LangChain >= 1.0 ---
 try:
     # Works on older LangChain (<1.0)
     from langchain.chains import LLMChain  # type: ignore
 except Exception:
-    # Provide a drop-in replacement using the Runnable API
     from dataclasses import dataclass
     from typing import Any
     from langchain_core.output_parsers import StrOutputParser
@@ -44,22 +40,21 @@ except Exception:
         output_key: str | None = None
 
         def __post_init__(self):
-            # prompt | llm | parser
+            # Compose modern runnable pipeline: prompt | llm | parser
             self._chain = self.prompt | self.llm | StrOutputParser()
 
         def run(self, *args, **kwargs):
-            # Support both: .run("text") and .run(var=value, ...)
+            # Supports .run("text") or .run(var=value, ...)
             if kwargs:
                 return self._chain.invoke(kwargs)
             if len(args) == 1:
-                # Use the first input variable name (defaults to "input")
                 ivars = getattr(self.prompt, "input_variables", None) or ["input"]
                 return self._chain.invoke({ivars[0]: args[0]})
             raise ValueError("Provide either a single text argument or keyword arguments matching the prompt variables.")
 
-    # Alias to look like the classic class
-    LLMChain = _CompatLLMChain
+    LLMChain = _CompatLLMChain  # alias
 # --- end shim ---
+
 
 
 

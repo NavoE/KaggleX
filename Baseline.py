@@ -1,4 +1,4 @@
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
 #Prompt Templates for Baseline Outputs
 headline_prompt2 = PromptTemplate(
