@@ -2,7 +2,7 @@ pandas
 streamlit
 langchain
 langchain_community
-langchain[all]
+langchain
 openai
 pysqlite3-binary
 chromadb
