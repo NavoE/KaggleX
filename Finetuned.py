@@ -1,23 +1,23 @@
 from langchain_core.prompts import PromptTemplate
 from langchain_core.prompts.few_shot import FewShotPromptTemplate
-from langchain_community.example_selectors import SemanticSimilarityExampleSelector
+from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
 
-# --- Few-shot examples (match on "topic", show target "headline") ---
+# --- Stronger, more realistic few-shot examples (topic → headline) ---
 headline_examples = [
     {"topic": "Inflation relief bill",
-     "headline": "Congress Debates Inflation Relief Bill Amid Budget Standoff"},
+     "headline": "Congress Weighs Inflation Relief Bill as Budget Talks Tighten"},
     {"topic": "Wildfire response funding",
-     "headline": "Governor Announces Boost to Wildfire Response and Prevention"},
+     "headline": "Governor Proposes Surge Funding for Wildfire Response and Prevention"},
     {"topic": "Public safety and policing",
-     "headline": "Mayor Unveils Community-First Plan to Improve Public Safety"},
+     "headline": "Mayor Details Community Partnership Plan to Improve Public Safety"},
     {"topic": "Small business tax credits",
-     "headline": "State Expands Tax Credits to Help Small Businesses Hire"},
+     "headline": "State Expands Hiring Tax Credits to Support Small Businesses"},
     {"topic": "School infrastructure upgrades",
-     "headline": "District Launches Plan to Modernize Aging School Facilities"},
+     "headline": "District Unveils Plan to Modernize Aging School Facilities"},
     {"topic": "Clean energy jobs",
-     "headline": "Clean Energy Initiative Aims to Create Thousands of Local Jobs"},
+     "headline": "Clean Energy Initiative Targets Thousands of New Local Jobs"},
     {"topic": "Veterans services expansion",
      "headline": "New Investments Expand Health and Housing Support for Veterans"},
 ]
@@ -25,10 +25,10 @@ headline_examples = [
 # Select the most relevant example based on the user's "topic"
 example_selector = SemanticSimilarityExampleSelector.from_examples(
     examples=headline_examples,
-    embeddings=OpenAIEmbeddings(),   # <-- instance, not class
+    embeddings=OpenAIEmbeddings(),
     vectorstore_cls=Chroma,
     k=1,
-    input_keys=["topic"],            # <-- the field used from the runtime input
+    input_keys=["topic"],
 )
 
 # How each example is rendered in the few-shot prompt
@@ -43,40 +43,69 @@ headline_prompt = FewShotPromptTemplate(
     example_prompt=example_prompt,
     suffix=(
         "User topic: {topic}\n"
-        "Write ONE news-style headline only (≤80 chars), factual, specific, and non-clickbait. "
-        "Avoid ALL CAPS; no extra text."
+        "Write ONE newsroom-style headline ONLY (no extra text).\n"
+        "Rules:\n"
+        "• ≤80 characters; active voice; specific; no clickbait; avoid ALL CAPS.\n"
+        "• Include actor + action + object; add locale/timeframe if clear.\n"
+        "• If facts are uncertain or allegations exist, use careful framing "
+        "  (e.g., “addresses report”, “proposes”, “considers”).\n"
+        "• Subtly mirror a pragmatic, credible political voice (no slogans)."
     ),
     input_variables=["topic"],
 )
 
-# Other templates (unchanged except clearer guardrails if you want them)
+# Press release with stronger credibility + “researchy” discipline
 press_template = PromptTemplate(
     input_variables=["headline", "wikipedia_research", "google"],
     template=(
-        "I want you to act as a politician. Write a factual press release based on:\n"
-        "Headline: {headline}\nWikipedia notes: {wikipedia_research}\nGoogle notes: {google}\n\n"
-        "Structure: dateline, 1–2 sentence lead, 2–3 short paragraphs with facts/background/next steps, "
-        "one short quote, a brief CTA + boilerplate. Avoid speculation."
+        "You are a responsible politician writing a factual press release.\n"
+        "Source inputs (may be incomplete; DO NOT fabricate):\n"
+        "• Headline: {headline}\n"
+        "• Wikipedia notes: {wikipedia_research}\n"
+        "• Google notes: {google}\n\n"
+        "Write a newsroom-ready release with this structure:\n"
+        "1) DATELINE (CITY, ST — Month Day, Year —).\n"
+        "2) Lead: 1–2 sentences summarizing the concrete news.\n"
+        "3) Body: 2–3 short paragraphs with verifiable facts, relevant background, next steps.\n"
+        "4) Quote: one short, human quote (First Last, Title) in a measured, authentic voice.\n"
+        "5) CTA + boilerplate: brief call to action and 1–2 sentence campaign boilerplate.\n\n"
+        "Credibility & research guardrails:\n"
+        "• Do NOT invent dates, numbers, or sources. If specifics are unclear, explicitly note that the\n"
+        "  campaign is reviewing public information and will update the public.\n"
+        "• Attribute carefully using hedges like “according to public reports” or “state data indicate,”\n"
+        "  only when supported by the notes above; never fabricate citations.\n"
+        "• Avoid legal conclusions/defamation; keep tone respectful and factual.\n"
+        "• ≤300 words total; concise and readable."
     ),
 )
 
+# Platform posts with clear constraints
 twitter_template = PromptTemplate(
     input_variables=["press_release"],
-    template="Write ONE tweet (≤280 chars), factual and respectful, based on this: {press_release}"
+    template=(
+        "From this press release, write ONE tweet (≤280 chars):\n"
+        "{press_release}\n\n"
+        "Constraints: factual, respectful, no speculation; include at most one brief proof point if present; "
+        "0–2 concise hashtags; 0–1 emoji (optional); optional short CTA with example.com."
+    ),
 )
 
 facebook_template = PromptTemplate(
     input_variables=["twitter"],
     template=(
-        "Turn this into a short Facebook post (3–5 sentences, line breaks ok), "
-        "with a clear next step and up to 2 hashtags: {twitter}"
+        "Turn this into a short Facebook post (3–5 sentences, line breaks ok):\n"
+        "{twitter}\n\n"
+        "Add one concrete next step (event/site/contact) with a placeholder link; up to 2 specific hashtags; "
+        "avoid ALL CAPS & emoji clutter; keep it factual and acknowledge uncertainty when needed."
     ),
 )
 
 instagram_template = PromptTemplate(
     input_variables=["facebook"],
     template=(
-        "Create an Instagram caption (2–4 short lines, warm tone, ≤150 words) based on: {facebook}\n"
-        "End with 3–5 relevant hashtags; avoid emoji spam."
+        "Create an Instagram caption based on this:\n"
+        "{facebook}\n\n"
+        "2–4 short lines; warm, human tone; ≤150 words; if noting a proof point, keep it brief and neutral; "
+        "end with 3–5 relevant, non-generic hashtags; 0–2 tasteful emojis max (optional)."
     ),
 )
