@@ -60,11 +60,11 @@ topic: Political Landscape Shifts as New Policies Take Center Stage
 
 example_selector = SemanticSimilarityExampleSelector.from_examples(
     # This is the list of examples available to select from.
-    headline_examples,
+    examples=headline_examples,
     # This is the embedding class used to produce embeddings which are used to measure semantic similarity.
-    OpenAIEmbeddings(),
+    embedding_class=OpenAIEmbeddings,
     # This is the VectorStore class that is used to store the embeddings and do a similarity search over.
-    Chroma,
+    vectorstore_class=Chroma,
     # This is the number of examples to produce.
     k=1
 )

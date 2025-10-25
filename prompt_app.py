@@ -154,7 +154,7 @@ def generate_fine(prompt):
     #Returns response to prompt: What Political Issue Should I Write About?
     #Runs the Generative AI model using fine-tuned model and few shot prompting
     from Finetuned import headline_prompt, press_template, twitter_template, facebook_template, instagram_template
-    llm = ChatOpenAI(temperature=0.5, model = "ft:gpt-3.5-turbo-0613:personal::84XCwFjs")
+    llm = ChatOpenAI(temperature=0.5, model = "ft:gpt-3.5-turbo-0613:personal::84ZquM4I")
     headline_chain = LLMChain(llm=llm, prompt=headline_prompt, verbose = True, output_key = "headline")
     press_chain = LLMChain(llm=llm, prompt=press_template, verbose = True, output_key = "press_release")
     twitter_chain = LLMChain(llm=llm, prompt=twitter_template, verbose = True, output_key = "twitter")
@@ -173,7 +173,7 @@ def generate_fine(prompt):
     google_research = tool.run(prompt)
 
     #Feeds prompts into OpenAI LLM chains
-    headline = headline_chain.run(prompt)
+    headline = headline_chain.run(topic=prompt)
     st.write("Headline: " + headline)
     st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment (~30 seconds).")
     press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
@@ -189,7 +189,7 @@ def generate_default(prompt):
   #Returns response to prompt: What Political Issue Should I Write About?
   #Runs the Generative AI model using basic model and limited prompting
   from Baseline import headline_prompt2, press_template2, twitter_template2, facebook_template2, instagram_template2
-  llm2 = ChatOpenAI(temperature=0.5, model='gpt-3.5-turbo-16k-0613')
+  llm2 = ChatOpenAI(temperature=0.5, model="gpt-4o-mini")
   headline_chain2 = LLMChain(llm=llm2, prompt=headline_prompt2, verbose = True, output_key = "headline2",)
   press_chain2 = LLMChain(llm=llm2, prompt=press_template2, verbose = True, output_key = "press_release2")
   twitter_chain2 = LLMChain(llm=llm2, prompt=twitter_template2, verbose = True, output_key = "twitter2")
