@@ -4,7 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.11,<3.12"
 dependencies = [
   "streamlit>=1.45,<2",
-  "langchain>=1.0,<2",              # ← add this line
+  "langchain>=1.0,<2",            # ← no exclamation mark
   "langchain-core>=1.0,<2",
   "langchain-community>=0.4,<0.6",
   "langchain-openai>=0.3",
@@ -17,4 +17,10 @@ dependencies = [
 ]
 
 [tool.uv]
-# ok to leave empty
+
+#run this if editing above
+python -m uv sync
+git add pyproject.toml uv.lock
+git commit -m "Fix pyproject: add langchain (remove leading !)"
+git push
+
