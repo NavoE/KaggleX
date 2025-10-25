@@ -1,107 +1,82 @@
 from langchain_core.prompts import PromptTemplate
 from langchain_core.prompts.few_shot import FewShotPromptTemplate
-from langchain_core.example_selectors import SemanticSimilarityExampleSelector
+from langchain_community.example_selectors import SemanticSimilarityExampleSelector
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
 
-#Few Shot Prompts
-# The few shot prompts will guide the algorithm to craft a catchy political headline.
+# --- Few-shot examples (match on "topic", show target "headline") ---
 headline_examples = [
-  {
-    "question": "Can you write me a political headline?",
-    "answer":
-"""
-topic: Politics Unveiled: A Closer Look at the Game of Power and Influence
-"""
-  },
-  {
-    "question": "Can you write me a political headline?",
-    "answer":
-"""
-topic: Political Turmoil: Challenges and Controversies Shape the World of Politics
-"""
-  },
-  {
-    "question": "Can you write me a political headline?",
-    "answer":
-"""
-topic: Political Landscape Shifts as New Policies and Candidates Emerge
-"""
-  },
-  {
-    "question": "Can you write me a political headline?",
-    "answer":
-"""
-topic: Politics: Shaping Society and Nation Through Governance and Policy-Making
-"""
-  },
-  {
-    "question": "Can you write me a political headline?",
-    "answer":
-"""
-topic: Breaking News: Political Turmoil Shakes the Nation
-"""
-  },
-   {
-    "question": "Can you write me a political headline?",
-    "answer":
-"""
-topic: Political Turmoil Grips Nation as Controversial Policies Divide Citizen
-"""
-  },
-  {
-    "question": "Can you write me a political headline?",
-    "answer":
-"""
-topic: Political Landscape Shifts as New Policies Take Center Stage
-"""
-  },
+    {"topic": "Inflation relief bill",
+     "headline": "Congress Debates Inflation Relief Bill Amid Budget Standoff"},
+    {"topic": "Wildfire response funding",
+     "headline": "Governor Announces Boost to Wildfire Response and Prevention"},
+    {"topic": "Public safety and policing",
+     "headline": "Mayor Unveils Community-First Plan to Improve Public Safety"},
+    {"topic": "Small business tax credits",
+     "headline": "State Expands Tax Credits to Help Small Businesses Hire"},
+    {"topic": "School infrastructure upgrades",
+     "headline": "District Launches Plan to Modernize Aging School Facilities"},
+    {"topic": "Clean energy jobs",
+     "headline": "Clean Energy Initiative Aims to Create Thousands of Local Jobs"},
+    {"topic": "Veterans services expansion",
+     "headline": "New Investments Expand Health and Housing Support for Veterans"},
 ]
 
+# Select the most relevant example based on the user's "topic"
 example_selector = SemanticSimilarityExampleSelector.from_examples(
-    # This is the list of examples available to select from.
-    headline_examples,
-    # This is the embedding class used to produce embeddings which are used to measure semantic similarity.
-    OpenAIEmbeddings,
-    # This is the VectorStore class that is used to store the embeddings and do a similarity search over.
-    Chroma,
-    # This is the number of examples to produce.
+    examples=headline_examples,
+    embeddings=OpenAIEmbeddings(),   # <-- instance, not class
+    vectorstore_cls=Chroma,
     k=1,
-    input_keys=["question"],      # which example field to embed
+    input_keys=["topic"],            # <-- the field used from the runtime input
 )
 
-#Prompt Templates
-#The prompt templates will determine the app's output.
-#Prompt Templates for Enhanced Outputs
-headline_template = PromptTemplate(
-    input_variables = ["question","answer"],
-    template = 'question: {question} \n {answer}'
+# How each example is rendered in the few-shot prompt
+example_prompt = PromptTemplate(
+    input_variables=["topic", "headline"],
+    template="User topic: {topic}\nGood headline: {headline}"
 )
 
+# Final few-shot prompt the chain will use
 headline_prompt = FewShotPromptTemplate(
     example_selector=example_selector,
-    example_prompt=headline_template,
-    suffix="Prompt: {topic}",
-    input_variables=["topic"]
-
+    example_prompt=example_prompt,
+    suffix=(
+        "User topic: {topic}\n"
+        "Write ONE news-style headline only (≤80 chars), factual, specific, and non-clickbait. "
+        "Avoid ALL CAPS; no extra text."
+    ),
+    input_variables=["topic"],
 )
 
+# Other templates (unchanged except clearer guardrails if you want them)
 press_template = PromptTemplate(
-    input_variables = ["headline", "wikipedia_research","google"],
-    template = 'I want you to act as a politician. You will research and analyze cultural, economic, political, and social events in the past, collect data from primary sources and use it to develop a press release about what happened during various periods of history. My first suggestion request is: write me a press release based on this headline: {headline} while leveraging this wikipedia research: {wikipedia_research} and google research: {google}'
+    input_variables=["headline", "wikipedia_research", "google"],
+    template=(
+        "I want you to act as a politician. Write a factual press release based on:\n"
+        "Headline: {headline}\nWikipedia notes: {wikipedia_research}\nGoogle notes: {google}\n\n"
+        "Structure: dateline, 1–2 sentence lead, 2–3 short paragraphs with facts/background/next steps, "
+        "one short quote, a brief CTA + boilerplate. Avoid speculation."
+    ),
 )
 
 twitter_template = PromptTemplate(
-    input_variables = ["press_release"],
-    template = 'write me a twitter post based on this press release written by a politician: {press_release}'
+    input_variables=["press_release"],
+    template="Write ONE tweet (≤280 chars), factual and respectful, based on this: {press_release}"
 )
 
 facebook_template = PromptTemplate(
-    input_variables = ["twitter"],
-    template = 'write me a facebook post based on this twitter post tweeted by a politician: {twitter}. Do not use emojis excessively.'
+    input_variables=["twitter"],
+    template=(
+        "Turn this into a short Facebook post (3–5 sentences, line breaks ok), "
+        "with a clear next step and up to 2 hashtags: {twitter}"
+    ),
 )
 
 instagram_template = PromptTemplate(
-    input_variables = ["facebook"],
-    template = 'write me an instagram post based on this facebook post written by a politician: {facebook}. Do not use emojis excessively.'
+    input_variables=["facebook"],
+    template=(
+        "Create an Instagram caption (2–4 short lines, warm tone, ≤150 words) based on: {facebook}\n"
+        "End with 3–5 relevant hashtags; avoid emoji spam."
+    ),
 )
