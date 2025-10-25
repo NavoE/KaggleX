@@ -3,9 +3,7 @@ import os
 import pandas as pd
 import streamlit as st
 
-# ✅ New LangChain import locations
 from langchain_openai import ChatOpenAI
-from langchain.chains import LLMChain
 from langchain_core.tools import Tool
 from langchain_community.utilities import WikipediaAPIWrapper, GoogleSearchAPIWrapper
 from langchain.globals import set_llm_cache
