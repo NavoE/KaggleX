@@ -7,7 +7,8 @@ import time
 import openai
 from io import BytesIO
 import pandas as pd
-
+-from langchain_core.schema import AIMessage
+-from langchain_core.adapters.openai import convert_message_to_dict
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 
 
