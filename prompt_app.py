@@ -240,7 +240,7 @@ model = st.radio(
 st.write('Please do not change the settings until after the content is generated. Otherwise, your content will not be generated.')
 
 #Creates tabs to separate app features
-tab1, tab2, tab3 = st.tabs(['Political Banter','Default','Data'])
+tab1, tab2, tab3 = st.tabs(['Fine-Tuned','Default','Data'])
 
 #Runs finetuned model and generates outputs onto tab 1
 with tab1:
