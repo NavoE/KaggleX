@@ -24,7 +24,6 @@ data = pd.read_csv('political_social_media.csv', encoding_errors= "ignore")
 
 # --- LLMChain compatibility shim for LangChain >= 1.0 ---
 try:
-    # Works on older LangChain (<1.0)
     from langchain.chains import LLMChain  # type: ignore
 except Exception:
     from dataclasses import dataclass
@@ -39,11 +38,9 @@ except Exception:
         output_key: str | None = None
 
         def __post_init__(self):
-            # Compose modern runnable pipeline: prompt | llm | parser
             self._chain = self.prompt | self.llm | StrOutputParser()
 
         def run(self, *args, **kwargs):
-            # Supports .run("text") or .run(var=value, ...)
             if kwargs:
                 return self._chain.invoke(kwargs)
             if len(args) == 1:
@@ -51,10 +48,8 @@ except Exception:
                 return self._chain.invoke({ivars[0]: args[0]})
             raise ValueError("Provide either a single text argument or keyword arguments matching the prompt variables.")
 
-    LLMChain = _CompatLLMChain  # alias
+    LLMChain = _CompatLLMChain
 # --- end shim ---
-
-
 
 
 #LangChain Crash Course: Build a AutoGPT app in 25 minutes!: https://www.youtube.com/watch?v=MlK6SIjcjE8

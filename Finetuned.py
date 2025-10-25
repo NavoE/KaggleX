@@ -1,8 +1,8 @@
-from langchain.prompts import PromptTemplate
-from langchain.prompts.few_shot import FewShotPromptTemplate
-from langchain.prompts.example_selector import SemanticSimilarityExampleSelector
-from langchain.vectorstores import Chroma
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts.few_shot import FewShotPromptTemplate
+from langchain_community.example_selectors import SemanticSimilarityExampleSelector
+from langchain_community.vectorstores import Chroma
+from langchain_openai import OpenAIEmbeddings
 
 #Few Shot Prompts
 # The few shot prompts will guide the algorithm to craft a catchy political headline.
