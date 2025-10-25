@@ -4,7 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.11,<3.12"
 dependencies = [
   "streamlit>=1.45,<2",
-  "langchain>=1.0,<2",
+  "langchain>=1.0,<2",              # ← add this line
   "langchain-core>=1.0,<2",
   "langchain-community>=0.4,<0.6",
   "langchain-openai>=0.3",
