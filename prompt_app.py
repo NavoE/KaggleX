@@ -1,7 +1,6 @@
 import os
 
 import pandas as pd
-import time
 import streamlit as st
 
 from langchain_openai import ChatOpenAI
@@ -157,15 +156,10 @@ def generate_fine(prompt):
     from Finetuned import headline_prompt, press_template, twitter_template, facebook_template, instagram_template
     llm = ChatOpenAI(temperature=0.5, model = "ft:gpt-3.5-turbo-0613:personal::84ZquM4I")
     headline_chain = LLMChain(llm=llm, prompt=headline_prompt, verbose = True, output_key = "headline")
-    time.sleep(1)
     press_chain = LLMChain(llm=llm, prompt=press_template, verbose = True, output_key = "press_release")
-    time.sleep(1)
     twitter_chain = LLMChain(llm=llm, prompt=twitter_template, verbose = True, output_key = "twitter")
-    time.sleep(1)
     facebook_chain = LLMChain(llm=llm, prompt=facebook_template, verbose = True, output_key = "facebook")
-    time.sleep(1)
     instagram_chain = LLMChain(llm=llm, prompt=instagram_template, verbose = True, output_key = "instagram")
-    time.sleep(1)
 
     #Creates wikipedia and google search instances
     search = GoogleSearchAPIWrapper()
@@ -197,13 +191,9 @@ def generate_default(prompt):
   from Baseline import headline_prompt2, press_template2, twitter_template2, facebook_template2, instagram_template2
   llm2 = ChatOpenAI(temperature=0.5, model="gpt-4o-mini")
   headline_chain2 = LLMChain(llm=llm2, prompt=headline_prompt2, verbose = True, output_key = "headline2",)
-  time.sleep(1)
   press_chain2 = LLMChain(llm=llm2, prompt=press_template2, verbose = True, output_key = "press_release2")
-  time.sleep(1)
   twitter_chain2 = LLMChain(llm=llm2, prompt=twitter_template2, verbose = True, output_key = "twitter2")
-  time.sleep(1)
   facebook_chain2 = LLMChain(llm=llm2, prompt=facebook_template2, verbose = True, output_key = "facebook2")
-  time.sleep(1)
   instagram_chain2 = LLMChain(llm=llm2, prompt=instagram_template2, verbose = True, output_key = "instagram2")
 
   #Feeds prompts into OpenAI LLM chains

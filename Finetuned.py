@@ -1,6 +1,6 @@
 from langchain_core.prompts import PromptTemplate
 from langchain_core.prompts.few_shot import FewShotPromptTemplate
-from langchain_community.example_selectors.semantic_similarity import SemanticSimilarityExampleSelector
+from langchain_community.example_selectors import SemanticSimilarityExampleSelector
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
 
