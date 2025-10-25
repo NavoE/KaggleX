@@ -6,8 +6,9 @@ import streamlit as st
 from langchain_openai import ChatOpenAI
 from langchain_core.tools import Tool
 from langchain_community.utilities import WikipediaAPIWrapper, GoogleSearchAPIWrapper
-from langchain.globals import set_llm_cache
-from langchain.cache import InMemoryCache
+from langchain_core.globals import set_llm_cache
+from langchain_core.caches import InMemoryCache
+
 
 set_llm_cache(InMemoryCache())
 
