@@ -1,8 +1,8 @@
 import os
 import streamlit as st
 import json
-from langchain.schema import AIMessage
-from langchain.adapters.openai import convert_message_to_dict
+from langchain_core.schema import AIMessage
+from langchain_core.adapters.openai import convert_message_to_dict
 import time
 import openai
 from io import BytesIO
