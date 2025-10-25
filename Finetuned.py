@@ -1,6 +1,6 @@
 from langchain_core.prompts import PromptTemplate
 from langchain_core.prompts.few_shot import FewShotPromptTemplate
-from langchain_community.example_selectors import SemanticSimilarityExampleSelector
+from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
 
@@ -60,13 +60,14 @@ topic: Political Landscape Shifts as New Policies Take Center Stage
 
 example_selector = SemanticSimilarityExampleSelector.from_examples(
     # This is the list of examples available to select from.
-    examples=headline_examples,
+    headline_examples,
     # This is the embedding class used to produce embeddings which are used to measure semantic similarity.
-    embedding_class=OpenAIEmbeddings,
+    OpenAIEmbeddings,
     # This is the VectorStore class that is used to store the embeddings and do a similarity search over.
-    vectorstore_class=Chroma,
+    Chroma,
     # This is the number of examples to produce.
-    k=1
+    k=1,
+    input_keys=["question"],      # which example field to embed
 )
 
 #Prompt Templates
