@@ -1,7 +1,7 @@
 [project]
 name = "kagglex"
 version = "0.1.0"
-requires-python = ">=3.11,<3.12"
+requires-python = ">=3.11,<3.14"
 dependencies = [
   "streamlit>=1.45,<2",
   "langchain>=1.0,<2",
@@ -13,7 +13,9 @@ dependencies = [
   "tiktoken>=0.6,<1",
   "wikipedia>=1.4,<2",
   "pandas>=2.2,<3",
-  "google-api-python-client>=2.120,<3"
+  "google-api-python-client>=2.120,<3",
+  # Streamlit Community Cloud ships an old system sqlite; Chroma needs >=3.35.
+  "pysqlite3-binary>=0.5,<1; sys_platform == 'linux'",
 ]
 
 [tool.uv]
@@ -23,4 +25,3 @@ dependencies = [
 #git add pyproject.toml uv.lock
 #git commit -m "Fix pyproject: add langchain (remove leading !)"
 #git push
-

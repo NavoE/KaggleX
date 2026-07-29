@@ -1,4 +1,14 @@
 import os
+import sys
+
+# Streamlit Community Cloud's system sqlite is too old for Chroma.
+# Prefer pysqlite3 when available (Linux / Community Cloud).
+try:
+    import pysqlite3  # type: ignore
+
+    sys.modules["sqlite3"] = pysqlite3
+except ImportError:
+    pass
 
 import pandas as pd
 import streamlit as st
@@ -24,31 +34,34 @@ data = pd.read_csv('political_social_media.csv', encoding_errors= "ignore")
 
 # --- LLMChain compatibility shim for LangChain >= 1.0 ---
 try:
-    from langchain.chains import LLMChain  # type: ignore
+    from langchain_classic.chains import LLMChain  # type: ignore
 except Exception:
-    from dataclasses import dataclass
-    from typing import Any
-    from langchain_core.output_parsers import StrOutputParser
+    try:
+        from langchain.chains import LLMChain  # type: ignore
+    except Exception:
+        from dataclasses import dataclass
+        from typing import Any
+        from langchain_core.output_parsers import StrOutputParser
 
-    @dataclass
-    class _CompatLLMChain:
-        llm: Any
-        prompt: Any
-        verbose: bool = False
-        output_key: str | None = None
+        @dataclass
+        class _CompatLLMChain:
+            llm: Any
+            prompt: Any
+            verbose: bool = False
+            output_key: str | None = None
 
-        def __post_init__(self):
-            self._chain = self.prompt | self.llm | StrOutputParser()
+            def __post_init__(self):
+                self._chain = self.prompt | self.llm | StrOutputParser()
 
-        def run(self, *args, **kwargs):
-            if kwargs:
-                return self._chain.invoke(kwargs)
-            if len(args) == 1:
-                ivars = getattr(self.prompt, "input_variables", None) or ["input"]
-                return self._chain.invoke({ivars[0]: args[0]})
-            raise ValueError("Provide either a single text argument or keyword arguments matching the prompt variables.")
+            def run(self, *args, **kwargs):
+                if kwargs:
+                    return self._chain.invoke(kwargs)
+                if len(args) == 1:
+                    ivars = getattr(self.prompt, "input_variables", None) or ["input"]
+                    return self._chain.invoke({ivars[0]: args[0]})
+                raise ValueError("Provide either a single text argument or keyword arguments matching the prompt variables.")
 
-    LLMChain = _CompatLLMChain
+        LLMChain = _CompatLLMChain
 # --- end shim ---
 
 
@@ -57,41 +70,41 @@ except Exception:
 #Finetuning for Tone: https://blog.langchain.dev/chat-loaders-finetune-a-chatmodel-in-your-voice/
 
 #Creates session state for fine-tuned
-if 'headline' not in st.session_state:
+if 'headline_id' not in st.session_state:
   st.session_state.headline_id = None
 
-if 'press' not in st.session_state:
+if 'press_id' not in st.session_state:
   st.session_state.press_id = None
 
-if 'twitter' not in st.session_state:
+if 'twitter_id' not in st.session_state:
   st.session_state.twitter_id = None
 
-if 'facebook' not in st.session_state:
+if 'facebook_id' not in st.session_state:
   st.session_state.facebook_id = None
 
-if 'instagram' not in st.session_state:
+if 'instagram_id' not in st.session_state:
   st.session_state.instagram_id = None
 
-if 'google' not in st.session_state:
+if 'google_id' not in st.session_state:
   st.session_state.google_id = None
 
-if 'wiki' not in st.session_state:
+if 'wiki_id' not in st.session_state:
   st.session_state.wiki_id = None
 
 #Creates session state for baseline
-if 'headline2' not in st.session_state:
+if 'headline2_id' not in st.session_state:
   st.session_state.headline2_id = None
 
-if 'press2' not in st.session_state:
+if 'press2_id' not in st.session_state:
   st.session_state.press2_id = None
 
-if 'twitter2' not in st.session_state:
+if 'twitter2_id' not in st.session_state:
   st.session_state.twitter2_id = None
 
-if 'facebook2' not in st.session_state:
+if 'facebook2_id' not in st.session_state:
   st.session_state.facebook2_id = None
 
-if 'instagram2' not in st.session_state:
+if 'instagram2_id' not in st.session_state:
   st.session_state.instagram2_id = None
 
 def finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research):
@@ -103,6 +116,12 @@ def finestate(headline, press_release, twitter, facebook, instagram, google_rese
   st.session_state.instagram_id = instagram
   st.session_state.google_id = google_research
   st.session_state.wiki_id = wiki_research
+
+def render_fine_results():
+  if not st.session_state.headline_id:
+    return
+
+  st.write("Headline: " + st.session_state.headline_id)
 
   #Adds returned results to tab 1 and uses expanders to separate topics
   with st.expander("Press Release"):
@@ -123,8 +142,6 @@ def finestate(headline, press_release, twitter, facebook, instagram, google_rese
   with st.expander("Wikipedia Research"):
       st.info(st.session_state.wiki_id)
 
-  return st.session_state
-
 def defstate(headline2, press_release2, twitter2, facebook2, instagram2):
   #Uses session state to store default variables
   st.session_state.headline2_id = headline2
@@ -132,6 +149,12 @@ def defstate(headline2, press_release2, twitter2, facebook2, instagram2):
   st.session_state.twitter2_id = twitter2
   st.session_state.facebook2_id = facebook2
   st.session_state.instagram2_id = instagram2
+
+def render_default_results():
+  if not st.session_state.headline2_id:
+    return
+
+  st.write("Headline: " + st.session_state.headline2_id)
 
   #Adds returned results to tab 2 and uses expanders to separate topics
   with st.expander("Press Release"):
@@ -145,11 +168,9 @@ def defstate(headline2, press_release2, twitter2, facebook2, instagram2):
 
   with st.expander("Instagram Post"):
     st.write(st.session_state.instagram2_id)
-
-  return st.session_state
   
 #Create function to generate fine-tuned content
-@st.cache_resource(show_spinner="Fetching data from OpenAI")
+@st.cache_data(show_spinner="Fetching data from OpenAI")
 def generate_fine(prompt):
     #Returns response to prompt: What Political Issue Should I Write About?
     #Runs the Generative AI model using fine-tuned model and few shot prompting
@@ -174,8 +195,6 @@ def generate_fine(prompt):
 
     #Feeds prompts into OpenAI LLM chains
     headline = headline_chain.run(topic=prompt)
-    st.write("Headline: " + headline)
-    st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment (~30 seconds).")
     press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
     twitter = twitter_chain.run(press_release=press_release,headline=headline)
     facebook = facebook_chain.run(twitter=twitter,headline=headline)
@@ -184,7 +203,7 @@ def generate_fine(prompt):
     return headline, press_release, twitter, facebook, instagram, google_research, wiki_research
 
 #Create function to generate default content
-@st.cache_resource(show_spinner="Fetching data from OpenAI")
+@st.cache_data(show_spinner="Fetching data from OpenAI")
 def generate_default(prompt):
   #Returns response to prompt: What Political Issue Should I Write About?
   #Runs the Generative AI model using basic model and limited prompting
@@ -198,8 +217,6 @@ def generate_default(prompt):
 
   #Feeds prompts into OpenAI LLM chains
   headline2 = headline_chain2.run(prompt)
-  st.write("Headline: " + headline2)
-  st.write("Your content is being generated. I am checking a number of sources and crafting an optimal solution for you - please give me a moment (~30 seconds). If I am taking longer than expected, that is because OpenAI is overloaded with requests, so I am re-running on your behalf.")
   press_release2 = press_chain2.run(headline2=headline2)
   twitter2 = twitter_chain2.run(press_release2=press_release2,headline2=headline2)
   facebook2 = facebook_chain2.run(twitter2=twitter2,headline2=headline2)
@@ -224,7 +241,7 @@ with st.sidebar:
   st.markdown('Political Banter uses caching, so your topic will be saved for future-reruns. To generate new content, either submit a new topic or clear the chache using the button below.')
  
   def clear_cache():
-    st.cache_resource.clear()
+    st.cache_data.clear()
 
   st.sidebar.button("Refresh Program",on_click=clear_cache, type='primary')
 
@@ -252,6 +269,9 @@ with tab1:
       if prompt:
         headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
         finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
+      else:
+        st.warning("Enter a political issue above before generating content.")
+    render_fine_results()
   else:
       st.write("Please select the Fine-Tuned OpenAI Model setting to generate new content")
 
@@ -265,6 +285,9 @@ with tab2:
       if prompt:
         headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
         defstate(headline2, press_release2, twitter2, facebook2, instagram2)
+      else:
+        st.warning("Enter a political issue above before generating content.")
+    render_default_results()
   else:
     st.write("Please select the Default OpenAI Model setting to generate new content") 
 
