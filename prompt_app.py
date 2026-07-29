@@ -24,8 +24,16 @@ set_llm_cache(InMemoryCache())
 
 # Secrets
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
-os.environ['GOOGLE_CSE_ID'] = st.secrets['GOOGLE_CSE_ID']
-os.environ['GOOGLE_API_KEY'] = st.secrets['GOOGLE_API_KEY']
+os.environ['GOOGLE_CSE_ID'] = st.secrets.get('GOOGLE_CSE_ID', '')
+os.environ['GOOGLE_API_KEY'] = st.secrets.get('GOOGLE_API_KEY', '')
+
+# Optional override in Streamlit secrets, e.g. FINE_TUNED_MODEL = "ft:..."
+# The legacy ft:gpt-3.5-turbo-0613 model is often missing/deleted; we fall back.
+FINE_TUNED_MODEL = st.secrets.get(
+    "FINE_TUNED_MODEL",
+    "ft:gpt-3.5-turbo-0613:personal::84ZquM4I",
+)
+FINE_TUNED_FALLBACK_MODEL = st.secrets.get("FINE_TUNED_FALLBACK_MODEL", "gpt-4o-mini")
 
 #Import Kaggle data: https://www.kaggle.com/datasets/crowdflower/political-social-media-posts?resource=download
 #Retrieve Data
@@ -91,6 +99,9 @@ if 'google_id' not in st.session_state:
 if 'wiki_id' not in st.session_state:
   st.session_state.wiki_id = None
 
+if 'fine_model_id' not in st.session_state:
+  st.session_state.fine_model_id = None
+
 #Creates session state for baseline
 if 'headline2_id' not in st.session_state:
   st.session_state.headline2_id = None
@@ -107,7 +118,7 @@ if 'facebook2_id' not in st.session_state:
 if 'instagram2_id' not in st.session_state:
   st.session_state.instagram2_id = None
 
-def finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research):
+def finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research, model_name=None):
   #Uses session state to store fine-tuned variables
   st.session_state.headline_id = headline
   st.session_state.press_id = press_release
@@ -116,11 +127,14 @@ def finestate(headline, press_release, twitter, facebook, instagram, google_rese
   st.session_state.instagram_id = instagram
   st.session_state.google_id = google_research
   st.session_state.wiki_id = wiki_research
+  st.session_state.fine_model_id = model_name
 
 def render_fine_results():
   if not st.session_state.headline_id:
     return
 
+  if st.session_state.fine_model_id:
+    st.caption(f"Model used: `{st.session_state.fine_model_id}`")
   st.write("Headline: " + st.session_state.headline_id)
 
   #Adds returned results to tab 1 and uses expanders to separate topics
@@ -200,32 +214,58 @@ def _google_research(query: str) -> str:
     return f"Google research unavailable ({type(exc).__name__}). Continuing without it."
 
 
+def _generate_fine_with_model(prompt, model_name, wiki_research, google_research):
+    """Run the few-shot + research pipeline with a specific chat model."""
+    from Finetuned import (
+        headline_prompt,
+        press_template,
+        twitter_template,
+        facebook_template,
+        instagram_template,
+    )
+
+    llm = ChatOpenAI(temperature=0.5, model=model_name)
+    headline_chain = LLMChain(llm=llm, prompt=headline_prompt, verbose=True, output_key="headline")
+    press_chain = LLMChain(llm=llm, prompt=press_template, verbose=True, output_key="press_release")
+    twitter_chain = LLMChain(llm=llm, prompt=twitter_template, verbose=True, output_key="twitter")
+    facebook_chain = LLMChain(llm=llm, prompt=facebook_template, verbose=True, output_key="facebook")
+    instagram_chain = LLMChain(llm=llm, prompt=instagram_template, verbose=True, output_key="instagram")
+
+    headline = headline_chain.run(topic=prompt)
+    press_release = press_chain.run(
+        headline=headline,
+        wikipedia_research=wiki_research,
+        google=google_research,
+    )
+    twitter = twitter_chain.run(press_release=press_release, headline=headline)
+    facebook = facebook_chain.run(twitter=twitter, headline=headline)
+    instagram = instagram_chain.run(facebook=facebook, headline=headline)
+    return headline, press_release, twitter, facebook, instagram, google_research, wiki_research, model_name
+
+
 #Create function to generate fine-tuned content
 @st.cache_data(show_spinner="Fetching data from OpenAI")
-def generate_fine(prompt):
+def generate_fine(prompt, primary_model, fallback_model):
     #Returns response to prompt: What Political Issue Should I Write About?
-    #Runs the Generative AI model using fine-tuned model and few shot prompting
-    from Finetuned import headline_prompt, press_template, twitter_template, facebook_template, instagram_template
-    llm = ChatOpenAI(temperature=0.5, model = "ft:gpt-3.5-turbo-0613:personal::84ZquM4I")
-    headline_chain = LLMChain(llm=llm, prompt=headline_prompt, verbose = True, output_key = "headline")
-    press_chain = LLMChain(llm=llm, prompt=press_template, verbose = True, output_key = "press_release")
-    twitter_chain = LLMChain(llm=llm, prompt=twitter_template, verbose = True, output_key = "twitter")
-    facebook_chain = LLMChain(llm=llm, prompt=facebook_template, verbose = True, output_key = "facebook")
-    instagram_chain = LLMChain(llm=llm, prompt=instagram_template, verbose = True, output_key = "instagram")
-
-    # Research helpers are best-effort: Wikipedia/Google often return HTML on Cloud
-    # (blocked UA, bad CSE credentials, quota), which surfaces as JSONDecodeError.
+    #Runs few-shot prompting (+ research). Tries the fine-tuned model first, then fallback.
     wiki_research = _wiki_research(prompt)
     google_research = _google_research(prompt)
 
-    #Feeds prompts into OpenAI LLM chains
-    headline = headline_chain.run(topic=prompt)
-    press_release = press_chain.run(headline=headline,wikipedia_research=wiki_research,google=google_research)
-    twitter = twitter_chain.run(press_release=press_release,headline=headline)
-    facebook = facebook_chain.run(twitter=twitter,headline=headline)
-    instagram = instagram_chain.run(facebook=facebook,headline=headline)
-    
-    return headline, press_release, twitter, facebook, instagram, google_research, wiki_research
+    candidates = []
+    for model_name in (primary_model, fallback_model):
+        if model_name and model_name not in candidates:
+            candidates.append(model_name)
+
+    errors = []
+    for model_name in candidates:
+        try:
+            return _generate_fine_with_model(prompt, model_name, wiki_research, google_research)
+        except Exception as exc:
+            errors.append(f"{model_name}: {type(exc).__name__}: {exc}")
+
+    raise RuntimeError(
+        "Fine-tuned generation failed for all models. " + " | ".join(errors)
+    )
 
 #Create function to generate default content
 @st.cache_data(show_spinner="Fetching data from OpenAI")
@@ -276,7 +316,10 @@ with st.sidebar:
 model = st.radio(
   "Which GenAI model would you like to use?",
   ["Fine-Tuned OpenAI Model","Default OpenAI Model"],
-  captions = ["Includes Fine-Tuned OpenAI Model and Few Shot Prompts","Uses Default OpenAI Model and Basic Prompts"]
+  captions = [
+    "Few-shot prompts + research; uses your fine-tuned model when available",
+    "Uses Default OpenAI Model and Basic Prompts",
+  ]
 )
 
 st.write('Please do not change the settings until after the content is generated. Otherwise, your content will not be generated.')
@@ -293,8 +336,32 @@ with tab1:
     if finebutton:
       if prompt:
         try:
-          headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
-          finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
+          (
+            headline,
+            press_release,
+            twitter,
+            facebook,
+            instagram,
+            google_research,
+            wiki_research,
+            used_model,
+          ) = generate_fine(prompt, FINE_TUNED_MODEL, FINE_TUNED_FALLBACK_MODEL)
+          finestate(
+            headline,
+            press_release,
+            twitter,
+            facebook,
+            instagram,
+            google_research,
+            wiki_research,
+            used_model,
+          )
+          if used_model != FINE_TUNED_MODEL:
+            st.info(
+              f"Fine-tuned model `{FINE_TUNED_MODEL}` was unavailable, so "
+              f"`{used_model}` was used with the few-shot prompts instead. "
+              "Set `FINE_TUNED_MODEL` in Streamlit secrets to a valid model id."
+            )
         except Exception as exc:
           st.error(
             "Fine-tuned generation failed. Check OPENAI_API_KEY and that the fine-tuned "

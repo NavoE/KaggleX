@@ -2,6 +2,8 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.prompts.few_shot import FewShotPromptTemplate
 
 # --- Stronger, more realistic few-shot examples (topic → headline) ---
+# Keep this static (no Chroma/embeddings). Semantic selectors break easily on
+# Streamlit Community Cloud and add a hard dependency on OpenAI embeddings.
 headline_examples = [
     {"topic": "Inflation relief bill",
      "headline": "Congress Weighs Inflation Relief Bill as Budget Talks Tighten"},
@@ -19,59 +21,26 @@ headline_examples = [
      "headline": "New Investments Expand Health and Housing Support for Veterans"},
 ]
 
-# How each example is rendered in the few-shot prompt
 example_prompt = PromptTemplate(
     input_variables=["topic", "headline"],
     template="User topic: {topic}\nGood headline: {headline}"
 )
 
-_HEADLINE_SUFFIX = (
-    "User topic: {topic}\n"
-    "Write ONE newsroom-style headline ONLY (no extra text).\n"
-    "Rules:\n"
-    "• ≤80 characters; active voice; specific; no clickbait; avoid ALL CAPS.\n"
-    "• Include actor + action + object; add locale/timeframe if clear.\n"
-    "• If facts are uncertain or allegations exist, use careful framing "
-    "  (e.g., “addresses report”, “proposes”, “considers”).\n"
-    "• Subtly mirror a pragmatic, credible political voice (no slogans)."
+headline_prompt = FewShotPromptTemplate(
+    examples=headline_examples,
+    example_prompt=example_prompt,
+    suffix=(
+        "User topic: {topic}\n"
+        "Write ONE newsroom-style headline ONLY (no extra text).\n"
+        "Rules:\n"
+        "• ≤80 characters; active voice; specific; no clickbait; avoid ALL CAPS.\n"
+        "• Include actor + action + object; add locale/timeframe if clear.\n"
+        "• If facts are uncertain or allegations exist, use careful framing "
+        "  (e.g., “addresses report”, “proposes”, “considers”).\n"
+        "• Subtly mirror a pragmatic, credible political voice (no slogans)."
+    ),
+    input_variables=["topic"],
 )
-
-
-def _build_headline_prompt():
-    """Build the few-shot headline prompt, preferring semantic example selection.
-
-    Falls back to static examples if embeddings/Chroma are unavailable (common on
-    Streamlit Community Cloud without a working sqlite/OpenAI embeddings path).
-    """
-    try:
-        from langchain_core.example_selectors import SemanticSimilarityExampleSelector
-        from langchain_community.vectorstores import Chroma
-        from langchain_openai import OpenAIEmbeddings
-
-        example_selector = SemanticSimilarityExampleSelector.from_examples(
-            examples=headline_examples,
-            embeddings=OpenAIEmbeddings(),
-            vectorstore_cls=Chroma,
-            k=1,
-            input_keys=["topic"],
-        )
-        return FewShotPromptTemplate(
-            example_selector=example_selector,
-            example_prompt=example_prompt,
-            suffix=_HEADLINE_SUFFIX,
-            input_variables=["topic"],
-        )
-    except Exception:
-        return FewShotPromptTemplate(
-            examples=headline_examples,
-            example_prompt=example_prompt,
-            suffix=_HEADLINE_SUFFIX,
-            input_variables=["topic"],
-        )
-
-
-# Final few-shot prompt the chain will use (built lazily on first access)
-headline_prompt = _build_headline_prompt()
 
 # Press release with stronger credibility + “researchy” discipline
 press_template = PromptTemplate(
@@ -98,7 +67,6 @@ press_template = PromptTemplate(
     ),
 )
 
-# Platform posts with clear constraints
 twitter_template = PromptTemplate(
     input_variables=["press_release"],
     template=(
