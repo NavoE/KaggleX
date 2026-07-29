@@ -169,6 +169,37 @@ def render_default_results():
   with st.expander("Instagram Post"):
     st.write(st.session_state.instagram2_id)
   
+def _wiki_research(query: str) -> str:
+  """Fetch Wikipedia notes; never crash the app on API/HTML failures."""
+  try:
+    import wikipedia
+
+    # Wikimedia requires a descriptive User-Agent; the stock one is often blocked.
+    wikipedia.set_user_agent(
+      "PoliticalBanter/1.0 (https://navo-kagglex.streamlit.app/; contact via app secrets)"
+    )
+    # The wikipedia package defaults to http:// which frequently returns non-JSON
+    # after redirects on Streamlit Cloud.
+    wikipedia.API_URL = "https://en.wikipedia.org/w/api.php"
+    return WikipediaAPIWrapper().run(query)
+  except Exception as exc:
+    return f"Wikipedia research unavailable ({type(exc).__name__}). Continuing without it."
+
+
+def _google_research(query: str) -> str:
+  """Fetch Google CSE notes; never crash the app on API/HTML failures."""
+  try:
+    search = GoogleSearchAPIWrapper()
+    tool = Tool(
+      name="Google Search",
+      description="Search Google for recent results.",
+      func=search.run,
+    )
+    return tool.run(query)
+  except Exception as exc:
+    return f"Google research unavailable ({type(exc).__name__}). Continuing without it."
+
+
 #Create function to generate fine-tuned content
 @st.cache_data(show_spinner="Fetching data from OpenAI")
 def generate_fine(prompt):
@@ -182,16 +213,10 @@ def generate_fine(prompt):
     facebook_chain = LLMChain(llm=llm, prompt=facebook_template, verbose = True, output_key = "facebook")
     instagram_chain = LLMChain(llm=llm, prompt=instagram_template, verbose = True, output_key = "instagram")
 
-    #Creates wikipedia and google search instances
-    search = GoogleSearchAPIWrapper()
-    tool = Tool(
-    name="Google Search",
-    description="Search Google for recent results.",
-    func=search.run,
-    )
-    wiki = WikipediaAPIWrapper()
-    wiki_research = wiki.run(prompt)
-    google_research = tool.run(prompt)
+    # Research helpers are best-effort: Wikipedia/Google often return HTML on Cloud
+    # (blocked UA, bad CSE credentials, quota), which surfaces as JSONDecodeError.
+    wiki_research = _wiki_research(prompt)
+    google_research = _google_research(prompt)
 
     #Feeds prompts into OpenAI LLM chains
     headline = headline_chain.run(topic=prompt)
@@ -267,8 +292,14 @@ with tab1:
     #Runs button to generate content
     if finebutton:
       if prompt:
-        headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
-        finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
+        try:
+          headline, press_release, twitter, facebook, instagram, google_research, wiki_research = generate_fine(prompt)
+          finestate(headline, press_release, twitter, facebook, instagram, google_research, wiki_research)
+        except Exception as exc:
+          st.error(
+            "Fine-tuned generation failed. Check OPENAI_API_KEY and that the fine-tuned "
+            f"model is still available. Details: {type(exc).__name__}: {exc}"
+          )
       else:
         st.warning("Enter a political issue above before generating content.")
     render_fine_results()
@@ -283,8 +314,14 @@ with tab2:
     #Runs button to generate content
     if defbutton:
       if prompt:
-        headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
-        defstate(headline2, press_release2, twitter2, facebook2, instagram2)
+        try:
+          headline2, press_release2, twitter2, facebook2, instagram2 = generate_default(prompt)
+          defstate(headline2, press_release2, twitter2, facebook2, instagram2)
+        except Exception as exc:
+          st.error(
+            "Default generation failed. Check OPENAI_API_KEY in Streamlit secrets. "
+            f"Details: {type(exc).__name__}: {exc}"
+          )
       else:
         st.warning("Enter a political issue above before generating content.")
     render_default_results()
